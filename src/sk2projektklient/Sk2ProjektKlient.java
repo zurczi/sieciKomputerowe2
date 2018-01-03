@@ -5,6 +5,10 @@
  */
 package sk2projektklient;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,6 +36,16 @@ public class Sk2ProjektKlient extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        //InetAddress addr=InetAddress.getByName("192.168.0.15");
+       InetAddress addr = null;//=InetAddress.getByAddress(new byte[]{(byte)192), (byte)168,(byte)0,(byte)15);
+        try {
+            Polaczenie polaczenie=new Polaczenie(addr.getByName("192.168.0.15"),1236);
+            polaczenie.println("127227");
+            polaczenie.readLine();
+        } catch (UnknownHostException ex) {
+            //Logger.getLogger(Sk2ProjektKlient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
 }
