@@ -5,7 +5,13 @@
  */
 package sk2projektklient;
 
+import Klasy.Polaczenie;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,17 +40,22 @@ public class Sk2ProjektKlient extends Application {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         launch(args);
         //InetAddress addr=InetAddress.getByName("192.168.0.15");
-       InetAddress addr = null;//=InetAddress.getByAddress(new byte[]{(byte)192), (byte)168,(byte)0,(byte)15);
+      /* InetAddress addr = null;//=InetAddress.getByAddress(new byte[]{(byte)192), (byte)168,(byte)0,(byte)15);
         try {
-            Polaczenie polaczenie=new Polaczenie(addr.getByName("192.168.0.15"),1236);
-            polaczenie.println("127227");
-            polaczenie.readLine();
+            Polaczenie polaczenie=new Polaczenie(addr.getByName("192.168.0.15"),1234);
+            System.out.println("1");
+            polaczenie.println("127245");
+            System.out.println("2");
+           System.out.println( polaczenie.readLine());
+           System.out.println("3");
+        
         } catch (UnknownHostException ex) {
             //Logger.getLogger(Sk2ProjektKlient.class.getName()).log(Level.SEVERE, null, ex);
         }
+       */
         
     }
     

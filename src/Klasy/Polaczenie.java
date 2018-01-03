@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk2projektklient;
+package Klasy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class Polaczenie {
                                      socket.getOutputStream()), true);
             writer.println(message);
         } catch (IOException e){ 
-            System.out.println("Nie udało sie wypisac");
+            System.out.println("Nie udało sie wyslac");
         }
     }
 
@@ -46,10 +46,10 @@ public class Polaczenie {
             return reader.readLine();
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            System.out.print("Nie udalo sie");
+            System.out.print("Nie udalo sie odberac");
             return "";
         }
-    }
+    }     
     
     public void close() {
         try {
@@ -57,7 +57,7 @@ public class Polaczenie {
                 socket.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+           // e.printStackTrace();
         }
     }
     public Socket getSocket() {
