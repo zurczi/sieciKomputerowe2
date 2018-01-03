@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="222.0" prefWidth="362.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk2projektklient.LogowanieController">
+   <children>
+      <Label layoutX="152.0" layoutY="41.0" text="Logowanie" />
+      <Label layoutX="93.0" layoutY="84.0" text="Nick" />
+      <Label layoutX="90.0" layoutY="118.0" text="Hasło" />
+      <TextField layoutX="130.0" layoutY="80.0" />
+      <TextField layoutX="130.0" layoutY="114.0" />
+      <Button layoutX="154.0" layoutY="151.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="102.0" text="Zaloguj się" />
+   </children>
+</AnchorPane>
