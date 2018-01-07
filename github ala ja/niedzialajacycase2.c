@@ -32,11 +32,6 @@ typedef struct uzytkownik{
     
 }uzytkownik;
 
-typedef struct pokoj{
-    char nazwa[10];
-    
-}pokoj;
-
 
 int main(){
     
@@ -45,9 +40,6 @@ int main(){
    
    
     uzytkownik *tabUzytkownikow=malloc(20*sizeof(uzytkownik));
-    pokoj *tabPokoi=malloc(20*sizeof(pokoj));
-    uzytkownik *tabListaOsobwPokoju=malloc(20*sizeof(uzytkownik));
-    
     int i;
 
     
@@ -96,8 +88,6 @@ int main(){
         //deklaracja zmiennych
         FILE *plik;
         int i1,j1,k;
-        int d,e;
-        int x=0;
         sleep(10);
         switch(wybor){
             case 1:
@@ -122,6 +112,7 @@ int main(){
   
                 printf("Przed odbiorem");
                 //odbieranie danych od klienta
+                //int pom=read(nfd,myNick,sizeof(myNick));
                 int pom2;
                 sleep(1);
                    // printf("Jestem w whiel\n");
@@ -199,7 +190,7 @@ int main(){
                 
             case 2: 
                 printf("case 2");
-                //sleep(1);
+                sleep(10);
                 plik=fopen("uzytkownicy.txt","rw");
                
                 for(k=0;k<20;k++){
@@ -215,16 +206,15 @@ int main(){
                 }}} 
   
                 
-                
                 char nazwyUzytkownikow[300]="100\n";
                 
                 //tworzenie tablicy nazw uzytkownikow do wyslania do klienta; nazwy uz. oddzielone sa tabulatorem
-                x=0;
+                int d,e;
+                int x=0;
                 for(d=0;d<20;d++){
                     for(e=0;e<=10;e++){
                         if(e==10) {
                             nazwyUzytkownikow[x]='\t';
-                            x++;
                             break;
                         }
                         if(tabUzytkownikow[d].nick[e]!=0){
@@ -233,19 +223,9 @@ int main(){
                         }
                     }
                 }
-                nazwyUzytkownikow[x-1]='\n';
-                
-                write(nfd,&nazwyUzytkownikow,x);
-                
-              /*
-                //wysylanie znak po znaku
-                x=0;
-                
-                while(nazwyUzytkownikow[x]>0){
-                    write(nfd,&nazwyUzytkownikow[x],1);
-                    x++;
-                }
-                */
+                //TU ZROBIC KOPIOWANIE TABLICY UZ DO ZMIENNEJ STRING
+
+                write(nfd,nazwyUzytkownikow,300);
                     
                 //pomocnicze wyswietlenie tablicy nazw uzytkownikow
                 printf(" X:%s",nazwyUzytkownikow);
@@ -257,132 +237,6 @@ int main(){
             
             case 3:
                 printf("case 2");
-                //sleep(1);
-                plik=fopen("pokoje.txt","rw");
-               
-                for(k=0;k<20;k++){
-                fgets(tabPokoi[k].nazwa,10,plik);
-                }
-                
-                //usuwanie enterow
-                //int i1,j1;
-                for (i1=0;i1<20;i1++){
-                    for(j1=0;j1<10;j1++){
-                        if((tabPokoi[i1].nazwa[j1] <97 ||  tabPokoi[i1].nazwa[j1]>122) && (tabPokoi[i1].nazwa[j1] >57 ||  tabPokoi[i1].nazwa[j1]<48)){
-                    tabPokoi[i1].nazwa[j1]=0;
-                }}} 
-  
-                
-                
-                char nazwyPokoi[300]="100\n";
-                
-                //tworzenie tablicy nazw uzytkownikow do wyslania do klienta; nazwy uz. oddzielone sa tabulatorem
-                x=0;
-                for(d=0;d<20;d++){
-                    for(e=0;e<=10;e++){
-                        if(e==10) {
-                            nazwyPokoi[x]='\t';
-                            x++;
-                            break;
-                        }
-                        if(tabPokoi[d].nazwa[e]!=0){
-                            nazwyPokoi[x]=tabPokoi[d].nazwa[e];
-                            x++;
-                        }
-                    }
-                }
-                nazwyPokoi[x-1]='\n';
-                
-                write(nfd,&nazwyPokoi,x);
-                
-              /*
-                //wysylanie znak po znaku
-                x=0;
-                
-                while(nazwyPokoi[x]>0){
-                    write(nfd,&nazwyPokoi[x],1);
-                    x++;
-                }
-                */
-                    
-                //pomocnicze wyswietlenie tablicy nazw uzytkownikow
-                printf(" X:%s",nazwyPokoi);
-                
-                close(nfd);
-                fclose(plik);
-                //close(plik2);
-                exit(0);
-            
-            case 4:
-                printf("case 4");
-                //sleep(1);
-                
-                //Odbieranie nazwy pokoju
-                char nazwaPokoju[10];
-                int pom2;
-                sleep(1);
-                pom2=read(nfd,nazwaPokoju,sizeof(nazwaPokoju));
-                printf("\nOdebralem nazwe pokoju:" );
-                
-                char odebralemNazwaPokoju[4]="200\n";
-                write(nfd,odebralemNazwaPokoju,4);
-                
-                
-                plik=fopen("""+ nazwaPokoju +".txt"","rw");
-               
-                for(k=0;k<20;k++){
-                fgets(tabListaOsobwPokoju[k].nick,10,plik);
-                }
-                
-                //usuwanie enterow
-                //int i1,j1;
-                for (i1=0;i1<20;i1++){
-                    for(j1=0;j1<10;j1++){
-                        if((tabListaOsobwPokoju[i1].nick[j1] <97 ||  tabListaOsobwPokoju[i1].nick[j1]>122) && (tabListaOsobwPokoju[i1].nick[j1] >57 ||  tabListaOsobwPokoju[i1].nick[j1]<48)){
-                    tabListaOsobwPokoju[i1].nick[j1]=0;
-                }}} 
-  
-                
-                
-                char listaUzytkownikow[300]="100\n";
-                
-                //tworzenie tablicy nazw uzytkownikow do wyslania do klienta; nazwy uz. oddzielone sa tabulatorem
-                x=0;
-                for(d=0;d<20;d++){
-                    for(e=0;e<=10;e++){
-                        if(e==10) {
-                            listaUzytkownikow[x]='\t';
-                            x++;
-                            break;
-                        }
-                        if(tabListaOsobwPokoju[d].nick[e]!=0){
-                            listaUzytkownikow[x]=tabListaOsobwPokoju[d].nick[e];
-                            x++;
-                        }
-                    }
-                }
-                listaUzytkownikow[x-1]='\n';
-                
-                write(nfd,&listaUzytkownikow,x);
-                
-              /*
-                //wysylanie znak po znaku
-                x=0;
-                
-                while(listaUzytkownikow[x]>0){
-                    write(nfd,&listaUzytkownikow[x],1);
-                    x++;
-                }
-                */
-                    
-                //pomocnicze wyswietlenie tablicy nazw uzytkownikow
-                printf(" X:%s",listaUzytkownikow);
-                
-                close(nfd);
-                fclose(plik);
-                //close(plik2);
-                exit(0);
-                
             
         }
         close(nfd);///
@@ -392,3 +246,4 @@ int main(){
     
   return 0;
 }
+
