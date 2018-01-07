@@ -80,9 +80,9 @@ int main(){
     if(fork()==0){
        //nfd=accept(fd,(struct sockaddr*)&adres, &len);
         close(fd);
-        printf("\n\n\nNowe polaczenie: %s\n", inet_ntoa((struct in_addr)adres.sin_addr)); //wyswietla info o tym kto sie podlaczyl
-        int pom=read(nfd,wyborCHAR,sizeof(wyborCHAR));
         
+        int pom=read(nfd,wyborCHAR,sizeof(wyborCHAR));
+        printf("\n\n\nNowe polaczenie: %s\n", inet_ntoa((struct in_addr)adres.sin_addr)); //wyswietla info o tym kto sie podlaczyl
         printf("\nODEBRALEM WYBOR:  \n" );
         write(1,wyborCHAR,pom);
         
@@ -97,6 +97,9 @@ int main(){
         FILE *plik;
         int i1,j1,k;
         int d,e;
+        int y;
+            int y2;
+        int pom2;
         int x=0;
         sleep(10);
         switch(wybor){
@@ -122,7 +125,7 @@ int main(){
   
                 printf("Przed odbiorem");
                 //odbieranie danych od klienta
-                int pom2;
+                //int pom2;
                 sleep(1);
                    // printf("Jestem w whiel\n");
                     pom2=read(nfd,myNick,sizeof(myNick));//}
@@ -141,8 +144,7 @@ int main(){
                     printf(" \nZmieninoe :%d\n",myNick[j1]);
                 }}
                 
-                int y;
-                int y2=0;
+                y2=0;
                 char myNick2[10];
                 for(y=0;y<10;y++){
                     if(myNick[y]!=0){ 
@@ -319,17 +321,47 @@ int main(){
                 
                 //Odbieranie nazwy pokoju
                 char nazwaPokoju[10];
-                int pom2;
+                
                 sleep(1);
                 pom2=read(nfd,nazwaPokoju,sizeof(nazwaPokoju));
-                printf("\nOdebralem nazwe pokoju:" );
+                printf("\nOdebralem nazwe pokoju" );
                 
-                char odebralemNazwaPokoju[4]="200\n";
-                write(nfd,odebralemNazwaPokoju,4);
+                //char odebralemNazwaPokoju[4]="200\n";
+                //write(nfd,odebralemNazwaPokoju,4);
+                printf("nazwa pokoju przed: %s",nazwaPokoju);
+                
+                 for(j1=0;j1<10;j1++){
+                     printf("W forze:  --%d--",nazwaPokoju[j1]);
+                     if((nazwaPokoju[j1] <97 ||  nazwaPokoju[j1]>122) && (nazwaPokoju[j1] >57 ||  nazwaPokoju[j1]<48)) {
+                         printf("W forze     5555:  --%d--",nazwaPokoju[j1]);   
+                         nazwaPokoju[j1]=0;
+                            
+                }}
                 
                 
-                plik=fopen("""+ nazwaPokoju +".txt"","rw");
-               
+                y2=0;
+                char nazwaPokoju2[10];
+                for(y=0;y<10;y++){
+                    if(nazwaPokoju2[y]!=0){ 
+                        nazwaPokoju2[y2]=nazwaPokoju2[y];
+                        y2++;
+                    }
+                }
+                
+                
+                printf("\nnazwa pokoju po: %s\n",nazwaPokoju2);
+                
+                
+                char sciezka[16] = "\"";
+                strcat(sciezka,nazwaPokoju2);
+                strcat(sciezka,".txt\"");
+                
+                printf("Sciezka po: %s",sciezka);
+                
+                plik=fopen(sciezka,"rw");
+                
+                
+                
                 for(k=0;k<20;k++){
                 fgets(tabListaOsobwPokoju[k].nick,10,plik);
                 }
