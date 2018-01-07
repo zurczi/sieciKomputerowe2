@@ -43,6 +43,7 @@ public class Polaczenie {
         try {
             reader = new BufferedReader(new InputStreamReader(
                                         socket.getInputStream()));
+            
             return reader.readLine();
         } catch (IOException e) {
             // TODO Auto-generated catch block

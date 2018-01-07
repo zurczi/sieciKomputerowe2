@@ -5,6 +5,7 @@
  */
 package sk2projektklient;
 
+import Klasy.Funkcje;
 import Klasy.Polaczenie;
 import java.net.InetAddress;
 import java.net.URL;
@@ -14,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 /**
@@ -27,17 +29,36 @@ public class LogowanieController implements Initializable {
     @FXML
     private TextField nickDoLogowania;
     @FXML
-    void handleZalogujSie2(ActionEvent event) {
-               InetAddress addr = null;//=InetAddress.getByAddress(new byte[]{(byte)192), (byte)168,(byte)0,(byte)15);
+    private Label info;
+    private Funkcje funkcje;
+    
+    @FXML
+    void handleZalogujSie2(ActionEvent event) throws InterruptedException {
+        Polaczenie polaczenie=null;
+              // InetAddress addr = null;//=InetAddress.getByAddress(new byte[]{(byte)192), (byte)168,(byte)0,(byte)15);
         try {
-            Polaczenie polaczenie=new Polaczenie(addr.getByName("192.168.0.15"),1234);
-            
-            polaczenie.println(nickDoLogowania.getText());
-            
-            System.out.println( polaczenie.readLine());
-           
-        
-        } catch (UnknownHostException ex) {
+             System.out.println("polaczono");
+            //Polaczenie polaczenie;
+                   polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
+                   System.out.println("polaczono");
+            polaczenie.println("1\n");
+            String czyOdbior= polaczenie.readLine();
+            System.out.println(czyOdbior);
+            if (czyOdbior.equals("11")) {
+                System.out.println("czkema");
+                polaczenie.println(nickDoLogowania.getText()+"\n");
+                //polaczenie.println("nick\n");
+                String odbior=polaczenie.readLine();
+                System.out.println( odbior);
+                if(odbior.equals("100")){
+                    info.setText("Nie udało się zalogować. Taki nick juz istnieje");
+                }else {
+                    info.setText("Udało się zalogować poprawnie");
+                }
+                }
+            polaczenie.close();
+        } catch (Exception ex) {
+            polaczenie.close();
             //Logger.getLogger(Sk2ProjektKlient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -47,6 +68,7 @@ public class LogowanieController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        //Polaczenie polaczenie;
     }    
     
 }
