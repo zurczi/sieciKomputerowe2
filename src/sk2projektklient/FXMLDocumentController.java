@@ -149,6 +149,35 @@ public class FXMLDocumentController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 System.out.println(newValue);
+                Polaczenie polaczenie = null;
+        try {
+                polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
+                System.out.println("Polaczenie");
+                polaczenie.println("4\n");
+                System.out.println("wyslano");
+                String odbior=polaczenie.readLine();
+                if (odbior.equals("11")) {
+                    
+                    System.out.println("jestem w if");
+                    polaczenie.println(newValue+"\n");
+                    String uzyt = "";
+                        System.out.println("xxxx");
+                        uzyt=polaczenie.readLine();
+                        System.out.println("odebralem: "+uzyt);
+                        System.out.println("siemandero");
+                        String uzyt2=  uzyt.replace(" ","");
+                        String [] uzyt3=uzyt2.split("\t");
+                        List<String> uzyt4=Arrays.asList(uzyt3);
+                        listaUzytkownikow.setItems(FXCollections.observableArrayList(uzyt4));
+                        
+                        }
+                System.out.println("zaraz wylacze");
+              polaczenie.close();
+                }
+         catch (Exception ex) {
+             polaczenie.close();
+           // Logger.getLogger(Sk2ProjektKlient.class.getName()).log(Level.SEVERE, null, ex);
+        }
                // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
