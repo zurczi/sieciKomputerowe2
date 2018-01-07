@@ -7,16 +7,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="521.0" prefWidth="751.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk2projektklient.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="565.0" prefWidth="751.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk2projektklient.FXMLDocumentController">
     <children>
-        <Button fx:id="button" layoutX="598.0" layoutY="14.0" onAction="#handleButtonAction" prefHeight="37.0" prefWidth="96.0" text="Zaloguj Sie" />
+        <Button fx:id="button" layoutX="647.0" layoutY="14.0" onAction="#handleButtonAction" prefHeight="37.0" prefWidth="96.0" text="Zaloguj Sie" />
         <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
-      <Label layoutX="88.0" layoutY="54.0" text="Pokoje" />
-      <Label layoutX="613.0" layoutY="54.0" text="Uzytkownicy" />
-      <TextArea layoutX="196.0" layoutY="373.0" prefHeight="76.0" prefWidth="357.0" />
-      <Button fx:id="odswierzUzytkownikow" layoutX="570.0" layoutY="489.0" mnemonicParsing="false" onAction="#handleZaladujListeUzytkownikow" text="Odśwież listę użytkowników" />
-      <ListView layoutX="18.0" layoutY="78.0" prefHeight="411.0" prefWidth="164.0" />
-      <ListView fx:id="listaUzytkownikow" layoutX="570.0" layoutY="78.0" prefHeight="411.0" prefWidth="164.0" />
-      <TextArea layoutX="196.0" layoutY="78.0" prefHeight="283.0" prefWidth="357.0" />
+      <Label layoutX="82.0" layoutY="84.0" text="Pokoje" />
+      <Label layoutX="244.0" layoutY="84.0" text="Uzytkownicy" />
+      <TextArea layoutX="380.0" layoutY="450.0" prefHeight="76.0" prefWidth="357.0" />
+      <Button fx:id="odswierzUzytkownikow" layoutX="195.0" layoutY="526.0" mnemonicParsing="false" onAction="#handleZaladujListeUzytkownikow" text="Odśwież listę użytkowników" />
+      <ListView fx:id="listaPokoi" layoutX="18.0" layoutY="109.0" prefHeight="375.0" prefWidth="164.0" />
+      <ListView fx:id="listaUzytkownikow" layoutX="195.0" layoutY="109.0" prefHeight="411.0" prefWidth="164.0" />
+      <TextArea layoutX="380.0" layoutY="148.0" prefHeight="283.0" prefWidth="357.0" />
+      <Button fx:id="odswierzPokoje" layoutX="18.0" layoutY="526.0" mnemonicParsing="false" onAction="#handleZaladujListePokoi" prefHeight="25.0" prefWidth="164.0" text="Odśwież listę pokoi" />
+      <Button fx:id="utworzPokoj" layoutX="17.0" layoutY="491.0" mnemonicParsing="false" onAction="#handleUtworzPokoj" prefHeight="25.0" prefWidth="164.0" text="Utwórz pokój" />
     </children>
 </AnchorPane>
