@@ -335,7 +335,14 @@ int main(){
                 for(i=2;i<16;i++){
                     //if(nazwaPokoju[i]==0 || nazwaPokoju[i]==13 || nazwaPokoju[i]==10) {break;}
                     //if((nazwaPokoju[i]>96 && nazwaPokoju[i]<123) || (nazwaPokoju[i]==46) || (nazwaPokoju[i]==34)){
-                    if(nazwaPokoju[i]==34) {iloscCudzyslowiow++;}
+                    if(nazwaPokoju[i]==34) {
+                        iloscCudzyslowiow++;
+                        if(iloscCudzyslowiow==2){ 
+                        nazwaPokoju2[j]=0;
+                        break;}
+                        continue;
+                        
+                    }
                    
                     nazwaPokoju2[j]=nazwaPokoju[i];
                     if(iloscCudzyslowiow==2){ 
@@ -352,16 +359,16 @@ int main(){
                 
                 
                 
-     x=strlen(nazwaPokoju2);
+                x=strlen(nazwaPokoju2);
                 printf("Dlugosc: %d",x);
-                printf("\nSciezka po: %s.\n",nazwaPokoju2);
-                
-                plik=fopen(nazwaPokoju2,"rw");
-                printf("Otworzylem");
+                printf("\nSciezka po:%s.\n",nazwaPokoju2);
+                FILE *plik3;
+                plik3=fopen(nazwaPokoju2,"rw");
+                printf("\nOtworzylem\n");
                 
                 
                 for(k=0;k<20;k++){
-                fgets(tabListaOsobwPokoju[k].nick,10,plik);
+                fgets(tabListaOsobwPokoju[k].nick,10,plik3);
                 }
                 
                 //usuwanie enterow
@@ -409,7 +416,7 @@ int main(){
                 printf(" X:%s",listaUzytkownikow);
                 
                 close(nfd);
-                fclose(plik);
+                fclose(plik3);
                 //close(plik2);
                 exit(0);
                 
