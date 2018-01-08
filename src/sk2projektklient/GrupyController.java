@@ -23,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 /**
@@ -44,14 +45,23 @@ public class GrupyController implements Initializable {
     @FXML
     private ListView uzytkownicy;
     @FXML
+    private TableView<?> tabelaUzyt;
+    @FXML
     void handleDodaj(ActionEvent event) {
         uzytkownicyNalezacy.getItems().add(uzytkownicy.getSelectionModel().getSelectedItem());
         uzytkownicy.getItems().remove(uzytkownicy.getSelectionModel().getSelectedItem());   
     }
     @FXML 
     void handleZatwierdz (ActionEvent event){
-        // ObservableList lista=uzytkownicyNalezacy.getItems();
-       //  System.out.println(lista);
+         ObservableList lista=uzytkownicyNalezacy.getItems();
+         String listaUzyt;
+         listaUzyt=lista.toString();
+         String replace = listaUzyt.replace("[","");
+         replace = replace.replace("]","");
+         replace = replace.replace(",","");
+         replace = replace.replace(" ", "\t");
+         replace=replace+"\n";
+        System.out.println(replace);
          
         Polaczenie polaczenie = null;
      try {
@@ -69,10 +79,14 @@ public class GrupyController implements Initializable {
                                     polaczenie.println(this.nickAdministratora.getText()+"\n");
                                     odbior=polaczenie.readLine();
                                         if(odbior.equals("14")){
-                                          //  String lista=uzytkownicyNalezacy.getItems();
-                                            //polaczenie.println(uzytkownicyNalezacy);
-                                            System.out.println("jestem tu");
                                             
+                                          //  String lista=uzytkownicyNalezacy.getItems();
+                                            polaczenie.println(replace);
+                                            System.out.println("jestem tu");
+                                           odbior=polaczenie.readLine();
+                                                if(odbior.equals("15")){
+                                                    System.out.println("Udało sie utworzyc pokoj");
+                                                }else { System.out.println("Nie udało się utworzyć pokoju");}
                                             
                                         }
                                 }
