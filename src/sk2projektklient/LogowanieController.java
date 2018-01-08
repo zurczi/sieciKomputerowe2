@@ -34,6 +34,7 @@ public class LogowanieController implements Initializable {
     
     @FXML
     void handleZalogujSie2(ActionEvent event) throws InterruptedException {
+        
         Polaczenie polaczenie=null;
               // InetAddress addr = null;//=InetAddress.getByAddress(new byte[]{(byte)192), (byte)168,(byte)0,(byte)15);
         try {
@@ -54,6 +55,7 @@ public class LogowanieController implements Initializable {
                     info.setText("Nie udało się zalogować. Taki nick juz istnieje");
                 }else {
                     info.setText("Udało się zalogować poprawnie");
+                    
                 }
                 }
             polaczenie.close();

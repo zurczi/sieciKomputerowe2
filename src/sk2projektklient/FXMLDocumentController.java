@@ -7,6 +7,7 @@ package sk2projektklient;
 
 import Klasy.Funkcje;
 import Klasy.Polaczenie;
+import Klasy.Uzytkownik;
 import java.awt.event.MouseEvent;
 import java.net.InetAddress;
 import java.net.URL;
@@ -34,7 +35,7 @@ import javafx.stage.WindowEvent;
  * @author Anka
  */
 public class FXMLDocumentController implements Initializable {
-    
+    private Uzytkownik uzytkownik;
     @FXML
     private Button button;
     @FXML
@@ -48,6 +49,14 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button utworzPokoj;
     private Funkcje funkcje;
+
+    public Uzytkownik getUzytkownik() {
+        return uzytkownik;
+    }
+    
+    public void setUzytkownik(Uzytkownik uzytkownik) {
+        this.uzytkownik = uzytkownik;
+    }
     
     
     @FXML
@@ -145,6 +154,7 @@ public class FXMLDocumentController implements Initializable {
   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        this.uzytkownik=new Uzytkownik("");
         listaPokoi.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -159,7 +169,8 @@ public class FXMLDocumentController implements Initializable {
                 if (odbior.equals("11")) {
                     
                     System.out.println("jestem w if");
-                    polaczenie.println(newValue+"\n");
+                    polaczenie.println("\""+newValue+".txt\"\n");
+                    System.out.println("\""+newValue+".txt\"\n");
                     String uzyt = "";
                         System.out.println("xxxx");
                         uzyt=polaczenie.readLine();

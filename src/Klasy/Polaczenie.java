@@ -33,6 +33,7 @@ public class Polaczenie {
             writer = new PrintWriter(new OutputStreamWriter(
                                      socket.getOutputStream()), true);
             writer.println(message);
+       
         } catch (IOException e){ 
             System.out.println("Nie udało sie wyslac");
         }

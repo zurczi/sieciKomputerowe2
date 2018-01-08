@@ -11,13 +11,10 @@ package Klasy;
  */
 public class Uzytkownik {
     private String nick;
-    private String haslo;
-    private boolean czyDostepny;
 
-    public Uzytkownik(String nick, String haslo, boolean czyDostepny) {
+
+    public Uzytkownik(String nick) {
         this.nick = nick;
-        this.haslo = haslo;
-        this.czyDostepny = czyDostepny;
     }
 
     public String getNick() {
@@ -28,21 +25,8 @@ public class Uzytkownik {
         this.nick = nick;
     }
 
-    public String getHaslo() {
-        return haslo;
-    }
 
-    public void setHaslo(String haslo) {
-        this.haslo = haslo;
-    }
 
-    public boolean isCzyDostepny() {
-        return czyDostepny;
-    }
-
-    public void setCzyDostepny(boolean czyDostepny) {
-        this.czyDostepny = czyDostepny;
-    }
     
     
 }
