@@ -47,6 +47,7 @@ int main(){
     uzytkownik *tabUzytkownikow=malloc(20*sizeof(uzytkownik));
     pokoj *tabPokoi=malloc(20*sizeof(pokoj));
     uzytkownik *tabListaOsobwPokoju=malloc(20*sizeof(uzytkownik));
+    uzytkownik *tabListaOsobDoDodania=malloc(20*sizeof(uzytkownik));
     
     int i;
 
@@ -96,7 +97,7 @@ int main(){
         //deklaracja zmiennych
         FILE *plik;
         int i1,j1,k;
-        int d,e;
+        int d,e,a;
         int y;
             int y2;
         int pom2;
@@ -105,9 +106,6 @@ int main(){
         switch(wybor){
             case 1:
                 ;
-                //nfd=accept(fd,(struct sockaddr*)&adres, &len);
-                //odczyt pliku
-                //FILE *plik;
                 plik=fopen("uzytkownicy.txt","rw");
                 int plik2=open("uzytkownicy.txt",O_WRONLY|O_APPEND);
                 //int k;
@@ -134,7 +132,7 @@ int main(){
                 printf("Tu : %s",myNick);
                 char zajetaNazwa[150]="100\n";
                 char udaloSieZalogowac[150]="101\n";
-        printf(" I tu :%d",myNick[0]);
+                printf(" I tu :%d",myNick[0]);
                 myNick[0]=0;
                 //usuwanie entera z myNick
                 for(j1=0;j1<10;j1++){
@@ -175,7 +173,7 @@ int main(){
             
                     //wpisanie nowego nicku do pliku
                     fflush(plik);
-                    int a;
+                    //int a;
                     for(a=0;a<10;a++){
                         if(myNick2[a]>0) write(plik2,&myNick2[a],1);  
                     }
@@ -327,6 +325,7 @@ int main(){
                 printf("\nOdebralem nazwe pokoju%s",nazwaPokoju );
                                    
                 char nazwaPokoju2[16];
+                
                 char nazwaPokoju3[14];
                 
                 int iloscCudzyslowiow=0;
@@ -341,7 +340,6 @@ int main(){
                         nazwaPokoju2[j]=0;
                         break;}
                         continue;
-                        
                     }
                    
                     nazwaPokoju2[j]=nazwaPokoju[i];
@@ -350,14 +348,7 @@ int main(){
                         break;}                    
                     j++;
                     }
-                    
-                
-               
-                    
-              //  }
-                
-                
-                
+
                 
                 x=strlen(nazwaPokoju2);
                 printf("Dlugosc: %d",x);
@@ -420,6 +411,94 @@ int main(){
                 //close(plik2);
                 exit(0);
                 
+            case 5:
+                 printf("case 5");
+                
+                //Odbieranie nazwy pokoju
+                char nazwaPokojuDoDodania[16];
+                
+                sleep(1);
+                pom2=read(nfd,nazwaPokojuDoDodania,sizeof(nazwaPokojuDoDodania));
+                printf("\nOdebralem nazwe pokoju%s",nazwaPokojuDoDodania );
+                                   
+                char nazwaPokojuDoDodania2[16];
+                
+                //wyslanie potwierdzenia odebrania nazwy pokoju
+                char odbralemNazwePok[3]="13\n";
+                write(nfd,odbralemNazwePok,3);
+                
+                
+                int iloscCudzyslowiow2=0;
+                j=0;
+                
+                //wyodrebnianie ladnej nazwy
+                for(i=2;i<16;i++){
+                    if(nazwaPokojuDoDodania[i]==34) {
+                        iloscCudzyslowiow2++;
+                        if(iloscCudzyslowiow2==2){ 
+                        nazwaPokojuDoDodania2[j]=0;
+                        break;}
+                        continue;
+                    }
+                   
+                    nazwaPokojuDoDodania2[j]=nazwaPokojuDoDodania[i];
+                    if(iloscCudzyslowiow2==2){ 
+                        nazwaPokojuDoDodania2[j+1]=0;
+                        break;}                    
+                    j++;
+                    }
+
+                //utworzenie pliku o nazwie takiej jak nazwa pokoju
+                printf("\nSciezka po:%s.\n",nazwaPokojuDoDodania2);
+                FILE *plik33;
+                plik33=fopen(nazwaPokojuDoDodania2,"aw+");
+                printf("\nDodalem plik z grupa\n");
+                
+                //otworzenie desktyptora do zapisu pliku
+                int plik10=open(nazwaPokojuDoDodania2,O_WRONLY|O_APPEND);
+                
+                //odczytanie nicka admina pokoju
+                char nickAdmina[12];
+                pom2=read(nfd,nickAdmina,sizeof(nickAdmina));
+                printf("Odebralem nick admina pokoju:%s.",nickAdmina);
+                
+                char nickAdmina2[12];
+                for(i=0;i<12;i++){
+                    if(nickAdmina[i]!='\n') {nickAdmina2[i]=nickAdmina[i];}
+                        else {
+                            nickAdmina2[i]=0;
+                            break;
+                        }
+                    
+                }
+                
+                
+                printf("Nick admina po zmianie:%s.",nickAdmina2);
+                //zapis nicka admina do pliku
+                                  
+                for(a=0;a<10;a++){
+                    if(nickAdmina2[a]>0)
+                        write(plik10,&nickAdmina2[a],1);  
+                }
+                   
+                write(plik10,"\n",1);
+                
+                char udaloSieZapisacNick[3]="14\n";
+                write(nfd,udaloSieZapisacNick,3);
+                
+                
+                //odbieranie listy uzytkownikow w pokoju
+                char listaUzytkownikowPokoju[200];
+                //pom2=read(nfd,listaUzytkownikowPokoju,sizeof(listaUzytkownikowPokoju));
+                //printf("Odebralem liste uzytkownikow pokoju:%s.",listaUzytkownikowPokoju);
+                printf("\nKoniec CASE 5");
+                
+                
+                
+                close(nfd);
+                fclose(plik33);
+                close(plik10);
+                exit(0);
             
         }
         close(nfd);///
