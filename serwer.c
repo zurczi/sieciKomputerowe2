@@ -488,10 +488,29 @@ int main(){
                 
                 
                 //odbieranie listy uzytkownikow w pokoju
-                char listaUzytkownikowPokoju[200];
-                //pom2=read(nfd,listaUzytkownikowPokoju,sizeof(listaUzytkownikowPokoju));
-                //printf("Odebralem liste uzytkownikow pokoju:%s.",listaUzytkownikowPokoju);
-                printf("\nKoniec CASE 5");
+                char listaUzytkownikowPokoju[150];
+                pom2=read(nfd,listaUzytkownikowPokoju,sizeof(listaUzytkownikowPokoju));
+                printf("\nOdebralem liste uzytkownikow pokoju:%s.",listaUzytkownikowPokoju);
+                
+                for(a=0;a<150;a++){
+                    if(listaUzytkownikowPokoju[a]>0){
+                        if(listaUzytkownikowPokoju[a]==9){ 
+                            printf("%d\n",listaUzytkownikowPokoju[a]);
+                            //printf("jestem w if");
+                            write(plik10,"\n",1);
+                        }
+                        else {
+                            write(plik10,&listaUzytkownikowPokoju[a],1);
+                            printf("jestem w else");
+                        }  
+                    }
+                    else break;
+                 }
+                
+                char udaloSieUtworzycPokoj[3]="15\n";
+                write(nfd,udaloSieUtworzycPokoj,3);
+                
+                printf("\nKoniec CASE 5\n");
                 
                 
                 
