@@ -320,46 +320,44 @@ int main(){
                 //sleep(1);
                 
                 //Odbieranie nazwy pokoju
-                char nazwaPokoju[10];
+                char nazwaPokoju[16];
                 
                 sleep(1);
                 pom2=read(nfd,nazwaPokoju,sizeof(nazwaPokoju));
-                printf("\nOdebralem nazwe pokoju" );
+                printf("\nOdebralem nazwe pokoju%s",nazwaPokoju );
+                                   
+                char nazwaPokoju2[16];
+                char nazwaPokoju3[14];
                 
-                //char odebralemNazwaPokoju[4]="200\n";
-                //write(nfd,odebralemNazwaPokoju,4);
-                printf("nazwa pokoju przed: %s",nazwaPokoju);
+                int iloscCudzyslowiow=0;
+                j=0;
                 
-                 for(j1=0;j1<10;j1++){
-                     printf("W forze:  --%d--",nazwaPokoju[j1]);
-                     if((nazwaPokoju[j1] <97 ||  nazwaPokoju[j1]>122) && (nazwaPokoju[j1] >57 ||  nazwaPokoju[j1]<48)) {
-                         printf("W forze     5555:  --%d--",nazwaPokoju[j1]);   
-                         nazwaPokoju[j1]=0;
-                            
-                }}
-                
-                
-                y2=0;
-                char nazwaPokoju2[10];
-                for(y=0;y<10;y++){
-                    if(nazwaPokoju2[y]!=0){ 
-                        nazwaPokoju2[y2]=nazwaPokoju2[y];
-                        y2++;
+                for(i=2;i<16;i++){
+                    //if(nazwaPokoju[i]==0 || nazwaPokoju[i]==13 || nazwaPokoju[i]==10) {break;}
+                    //if((nazwaPokoju[i]>96 && nazwaPokoju[i]<123) || (nazwaPokoju[i]==46) || (nazwaPokoju[i]==34)){
+                    if(nazwaPokoju[i]==34) {iloscCudzyslowiow++;}
+                   
+                    nazwaPokoju2[j]=nazwaPokoju[i];
+                    if(iloscCudzyslowiow==2){ 
+                        nazwaPokoju2[j+1]=0;
+                        break;}                    
+                    j++;
                     }
-                }
+                    
+                
+               
+                    
+              //  }
                 
                 
-                printf("\nnazwa pokoju po: %s\n",nazwaPokoju2);
                 
                 
-                char sciezka[16] = "\"";
-                strcat(sciezka,nazwaPokoju2);
-                strcat(sciezka,".txt\"");
+     x=strlen(nazwaPokoju2);
+                printf("Dlugosc: %d",x);
+                printf("\nSciezka po: %s.\n",nazwaPokoju2);
                 
-                printf("Sciezka po: %s",sciezka);
-                
-                plik=fopen(sciezka,"rw");
-                
+                plik=fopen(nazwaPokoju2,"rw");
+                printf("Otworzylem");
                 
                 
                 for(k=0;k<20;k++){
