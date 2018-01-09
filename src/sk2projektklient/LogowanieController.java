@@ -47,13 +47,13 @@ public class LogowanieController implements Initializable {
             System.out.println(czyOdbior);
             if (czyOdbior.equals("11")) {
                 System.out.println("czkema");
-                polaczenie.println(nickDoLogowania.getText()+"\n");
+                polaczenie.println("\""+nickDoLogowania.getText()+"\""+"\n");
                 //polaczenie.println("nick\n");
                 String odbior=polaczenie.readLine();
                 System.out.println( odbior);
                 if(odbior.equals("100")){
                     info.setText("Nie udało się zalogować. Taki nick juz istnieje");
-                }else {
+                }else if(odbior.equals("101")) {
                     info.setText("Udało się zalogować poprawnie");
                     
                 }

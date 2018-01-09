@@ -14,12 +14,17 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 /**
- *
+ * Klasa odpowiedzialna za nawiązywanie połączenia
  * @author Anka
  */
+
 public class Polaczenie {
     private Socket socket;
-
+/**
+ * Funkcja odpowiedzialna za tworzenie gniazda - socket
+ * @param ip
+ * @param port 
+ */
     public Polaczenie(InetAddress ip, int port) {
         try {
             this.socket = new Socket(ip, port);
@@ -27,6 +32,10 @@ public class Polaczenie {
          System.out.println("Nie udalo sie utworzyc gniazda");
         }
     }  
+    /**
+     * Funkcja odpowiedzialna za wysyłanie wiadomosci
+     * @param message 
+     */
     public void println(String message) {
         PrintWriter writer;
         try {
@@ -38,7 +47,10 @@ public class Polaczenie {
             System.out.println("Nie udało sie wyslac");
         }
     }
-
+/**
+ * Funkcja odpowiedzialna za odbieranie wiadomosci
+ * @return String wiadomosc od serwera
+ */
     public String readLine() {
         BufferedReader reader;
         try {
@@ -52,7 +64,9 @@ public class Polaczenie {
             return "";
         }
     }     
-    
+    /**
+     * Funkcja zamykajaca gniazdo
+     */
     public void close() {
         try {
             if (socket != null && !socket.isClosed())

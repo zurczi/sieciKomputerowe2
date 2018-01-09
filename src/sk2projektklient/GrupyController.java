@@ -66,41 +66,29 @@ public class GrupyController implements Initializable {
         Polaczenie polaczenie = null;
      try {
                 polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
-                System.out.println("Polaczenie");
                 polaczenie.println("5\n");
-                System.out.println("wyslano");
                 String odbior=polaczenie.readLine();
                 if (odbior.equals("11")) {
-                    System.out.println("jestem w if");
                             polaczenie.println("\""+this.nazwaPokoju.getText()+".txt\""+"\n");
                             odbior=polaczenie.readLine();
                                 if(odbior.equals("13")){
-                                    System.out.println("Kasia 13");
                                     polaczenie.println(this.nickAdministratora.getText()+"\n");
                                     odbior=polaczenie.readLine();
                                         if(odbior.equals("14")){
-                                            
-                                          //  String lista=uzytkownicyNalezacy.getItems();
                                             polaczenie.println(replace);
-                                            System.out.println("jestem tu");
-                                           odbior=polaczenie.readLine();
+                                            odbior=polaczenie.readLine();
                                                 if(odbior.equals("15")){
                                                     System.out.println("Udało sie utworzyc pokoj");
-                                                }else { System.out.println("Nie udało się utworzyć pokoju");}
-                                            
+                                                }else { System.out.println("Nie udało się utworzyć pokoju");} 
                                         }
                                 }
                         }
-             
               polaczenie.close();
                 }
          catch (Exception ex) {
              polaczenie.close();
-           // Logger.getLogger(Sk2ProjektKlient.class.getName()).log(Level.SEVERE, null, ex);
         }
-    
     }
-
     /**
      * Initializes the controller class.
      */
@@ -114,40 +102,27 @@ public class GrupyController implements Initializable {
             Scanner in;
             in = new Scanner(file);  
             String nick = in.nextLine();
-            nickAdministratora.setText(nick);
-            
+            nickAdministratora.setText(nick);  
         } catch (FileNotFoundException ex) {
             System.out.println("Nie znaleziono pliku");
         }
       
-        
         try {
                 polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
-                System.out.println("Polaczenie");
                 polaczenie.println("2\n");
-                System.out.println("wyslano");
                 String odbior=polaczenie.readLine();
                 if (odbior.equals("11")) {
-                    System.out.println("jestem w if");
                     String uzyt = "";
-                        System.out.println("xxxx");
                         uzyt=polaczenie.readLine();
-                        System.out.println("odebralem: "+uzyt);
-                        System.out.println("siemandero");
                         String uzyt2=  uzyt.replace(" ","");
                         String [] uzyt3=uzyt2.split("\t");
                         List<String> uzyt4=Arrays.asList(uzyt3);
                         uzytkownicy.setItems(FXCollections.observableArrayList(uzyt4));
-                        
                         }
-                System.out.println("zaraz wylacze");
               polaczenie.close();
                 }
          catch (Exception ex) {
              polaczenie.close();
-           // Logger.getLogger(Sk2ProjektKlient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }    
-    
+        }  
+    }       
 }

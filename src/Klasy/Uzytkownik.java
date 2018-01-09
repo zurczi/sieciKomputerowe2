@@ -6,7 +6,7 @@
 package Klasy;
 
 /**
- *
+ * Klasa przechowująca nick klienta
  * @author Anka
  */
 public class Uzytkownik {
