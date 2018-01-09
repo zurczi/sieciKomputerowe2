@@ -5,7 +5,6 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <string.h>
-//
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -45,12 +44,12 @@ void* cthread (void* arg) {
     
     uzytkownik *tabUzytkownikow = malloc(20*sizeof(uzytkownik));
     pokoj *tabPokoi = malloc(20*sizeof(pokoj));
-    uzytkownik *tabListaOsobwPokoju = malloc(20*sizeof(uzytkownik));
+   // 
     uzytkownik *tabListaOsobDoDodania = malloc(20*sizeof(uzytkownik));
-    
-    
-    
+    uzytkownik *tabListaOsobwPokoju = malloc(20*sizeof(uzytkownik));
+
     struct cln* c = (struct cln*)arg;
+    
     int pom = read(c->cfd, &wyborCHAR, sizeof(wyborCHAR));
     printf("\nPolaczylem sie z:%s." , inet_ntoa((struct in_addr)c->caddr.sin_addr));
     printf("\nOdebralem wybor:%s.",wyborCHAR);
@@ -64,14 +63,15 @@ void* cthread (void* arg) {
     FILE *plik;
     int i,j,k,x;
     int iloscCudzyslowiow;
-    int pom2;
+    int pom2, plik2;
     sleep(1);
     
     switch(wybor){
         case 1:
             printf("\ncase 1"); //logowanie
             plik=fopen("uzytkownicy.txt","rw");
-            int plik2=open("uzytkownicy.txt",O_WRONLY|O_APPEND);
+            plik2=0;
+            plik2=open("uzytkownicy.txt",O_WRONLY|O_APPEND);
             
             //zczytywanie z pliku do tablicy
             for(i=0;i<20;i++){
@@ -191,7 +191,7 @@ void* cthread (void* arg) {
             write(c->cfd,&nazwyUzytkownikow,x);
             
             fclose(plik);
-            close(plik2);
+           // close(plik2);
             printf("\nSkonczylem case 2");
             break;
             
@@ -238,12 +238,13 @@ void* cthread (void* arg) {
             write(c->cfd,&nazwyPokoi,x);
             
             fclose(plik);
-            close(plik2);
+           // close(plik2);
             printf("\nSkonczylem case 3");
             break;
             
             
         case 4:
+           // uzytkownik *tabListaOsobwPokoju = malloc(20*sizeof(uzytkownik));
             printf("\ncase 4"); //wysylanie listy uzytkownikow w danym pokoju
             
             char nazwaPokoju[16];
@@ -272,14 +273,14 @@ void* cthread (void* arg) {
             
             printf("\nSciezka po:%s.",nazwaPokoju2);
             
-            FILE *plik3;
-            plik3=fopen(nazwaPokoju2,"rw");
-            printf("\nOtworzylam plik");
+            plik=fopen(nazwaPokoju2,"rw");
             
+            printf("\nOtworzylam plik:%s.",nazwaPokoju2);
+            
+            for(i=0;i<20;i++){printf("\nTablica osob w pokoju (element %d:%s.",i,tabListaOsobwPokoju[i].nick);}
             for(i=0;i<20;i++){
-                fgets(tabListaOsobwPokoju[i].nick,10,plik3);
+                fgets(tabListaOsobwPokoju[i].nick,10,plik);
             }
-            
             //usuwanie enterow
             for(i=0;i<20;i++){
                 for(j=0;j<10;j++){
@@ -288,8 +289,7 @@ void* cthread (void* arg) {
                     }
                 }
             }
-            
-            
+            //for(i=0;i<20;i++){printf("\nTablica osob w pokoju (element %d:%s.",i,tabListaOsobwPokoju[i].nick);}
             //tworzenie tablicy nazw uzytkownikow do wyslania do klienta; nazwy uzyt ossdielone sa tabulatorem
             char listaUzytkownikow[300];
             x=0;
@@ -313,7 +313,7 @@ void* cthread (void* arg) {
             //pomocnicze wyswietlanie tablicy nazw uzytkownikow
             printf("\nTablica nazw uzytkownikow:%s.", listaUzytkownikow);
             
-            fclose(plik3);
+            fclose(plik);
             printf("\nSkonczylem case 4");
             break;
             
@@ -321,7 +321,109 @@ void* cthread (void* arg) {
         case 5: //dodawanie grupy
             printf("\ncase 5");
             
+            char nazwaPokojuDoDodania[16];
             
+            sleep(1);
+            pom2=read(c->cfd,nazwaPokojuDoDodania,sizeof(nazwaPokojuDoDodania));
+            printf("\nOdebralem nazwe pokoju:%s.",nazwaPokojuDoDodania);
+            
+            char nazwaPokojuDoDodania2[16];
+            
+            //wysylanie potwierdzenia odebrania nazwy pokoju
+            char odbralemNazwePok[3]="13\n";
+            write(c->cfd,odbralemNazwePok,3);
+            
+            iloscCudzyslowiow=0;
+            j=0;
+            
+             for(i=2;i<12;i++){
+                if(nazwaPokojuDoDodania[i]==34){
+                    iloscCudzyslowiow++;
+                    if(iloscCudzyslowiow==2){ 
+                        nazwaPokojuDoDodania2[j]='\0';
+                        break;
+                    }
+                        continue;
+                }
+                nazwaPokojuDoDodania2[j]=nazwaPokojuDoDodania[i];
+                j++;
+            }
+            
+            printf("\nSciezka po:%s.\n",nazwaPokojuDoDodania2);
+            
+            plik=fopen(nazwaPokojuDoDodania2,"aw+");
+            printf("\nDodalem plik z grupa");
+            plik2=0;
+            plik2=open(nazwaPokojuDoDodania2,O_WRONLY|O_APPEND);
+            
+            //odczytanie nicka admina pokoju
+            char nickAdmina[12];
+            pom2=read(c->cfd,nickAdmina,sizeof(nickAdmina));
+            printf("\nOdebralem nick admina pokoju:%s.",nickAdmina);
+            
+            char nickAdmina2[12];
+            
+            for(i=0;i<12;i++){
+                if(nickAdmina[i]!='\n') {
+                    nickAdmina2[i]=nickAdmina[i];
+                }
+                else{
+                    nickAdmina2[i]=0;
+                    break;
+                }
+            }
+            
+            printf("\nNick admina po zmianie:%s.",nickAdmina2);
+            
+            //zapis nicka admina do pliku
+            for(i=0;i<10;i++){
+                if(nickAdmina2[i]>0)
+                    write(plik2,&nickAdmina2[i],1); 
+                if(nickAdmina2[i]<=0) break;
+            }
+                   
+            write(plik2,"\n",1);
+                
+            char udaloSieZapisacNick[3]="14\n";
+            write(c->cfd,udaloSieZapisacNick,3);
+            
+            //odbieranie listy uzytkownikow w pokoju
+            char listaUzytkownikowPokoju[150];
+            pom2=read(c->cfd,listaUzytkownikowPokoju,sizeof(listaUzytkownikowPokoju));
+            printf("\nOdebralem liste uzytkownikow pokoju:%s.",listaUzytkownikowPokoju);
+                
+            for(i=0;i<150;i++){
+                if(listaUzytkownikowPokoju[i]>0){
+                    if(listaUzytkownikowPokoju[i]==9){ 
+                        write(plik2,"\n",1);
+                    }
+                    else {
+                        write(plik2,&listaUzytkownikowPokoju[i],1);
+                    }  
+                }
+                else break;
+            }
+                
+            char udaloSieUtworzycPokoj[3]="15\n";
+            write(c->cfd,udaloSieUtworzycPokoj,3);
+            
+            fclose(plik);
+            close(plik2);
+            
+            
+            //dodawanie nowoutworzonego pokoju do pliku z pokojami
+            plik2=open("pokoje.txt",O_WRONLY|O_APPEND);
+            char nowyPokoj[12];
+            for(i=0;i<16;i++){
+                if(nazwaPokojuDoDodania2[i]!=46)
+                    nowyPokoj[i]=nazwaPokojuDoDodania2[i];
+                else
+                    break;
+            }
+            
+            write(plik2,&nowyPokoj,i);
+
+            close(plik2);           
             
             printf("\nSkonczylem case 5");
             break;
@@ -359,7 +461,7 @@ int main()
         struct cln* c = malloc(sizeof(struct cln));
         rozmiar = sizeof(c->caddr);
         c->cfd = accept(fd, (struct sockaddr*)&c->caddr, &rozmiar); // blokujaca, przekazuje IP i adres portu klienta, zwraca deskryptor nowego gniazda - sluzy tylko do komunikacji z tym klientem, gniazdo glowne jest stosowane tylko do akceptacji
-    //read/write z new_fd(nwd)
+        //read/write z new_fd(nwd)
         pthread_create(&tid, NULL, cthread, c);
         pthread_detach(tid);
         
