@@ -14,5 +14,13 @@ import java.util.List;
 public class Grupa {
     private String nazwa;
     private List<Uzytkownik> listaUzytkownikow;
+
+    public void setNazwa(String nazwa) {
+        this.nazwa = nazwa;
+    }
+
+    public String getNazwa() {
+        return nazwa;
+    }
     
 }
