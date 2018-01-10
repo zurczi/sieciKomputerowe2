@@ -1,6 +1,1 @@
-glowna
-praca
-znajomi
-rodzina
-studia
-klub
+uzytkowniy	praca	znajomi	rodzina	studia	klub

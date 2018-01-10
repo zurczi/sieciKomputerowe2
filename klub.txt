@@ -1,3 +1,1 @@
-piotr
-karol
-zosia
+piotr	karol	zosia
