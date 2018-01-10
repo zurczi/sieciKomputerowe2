@@ -39,7 +39,52 @@ struct cln {
     struct sockaddr_in caddr;
 };
 
+/*
+char *usunEntery(char *tablica){
+    char tablica2[12];
+    int iloscCudzyslowiow=0;
+    int i;
+    int j=0;
+            
+    for(i=2;i<12;i++){
+        if(tablica[i]==34){
+            iloscCudzyslowiow++;
+            if(iloscCudzyslowiow==2){ 
+                tablica2[j]='\0';
+                break;
+            }
+            continue;
+        }
+        tablica2[j]=tablica[i];
+        j++;
+    }
+    
+    return tablica2;
+}
 
+
+int usunEntery_IleZnakow(char* tablica){
+    char tablica2[12];
+    int iloscCudzyslowiow=0;
+    int i;
+    int j=0;
+            
+    for(i=2;i<12;i++){
+        if(tablica[i]==34){
+            iloscCudzyslowiow++;
+            if(iloscCudzyslowiow==2){ 
+                tablica2[j]='\0';
+                break;
+            }
+            continue;
+        }
+        tablica2[j]=tablica[i];
+        j++;
+    }
+    
+    return j;
+}
+*/
 void* cthread (void* arg) {
     
     uzytkownik *tabUzytkownikow = malloc(20*sizeof(uzytkownik));
@@ -481,9 +526,9 @@ void* cthread (void* arg) {
             //odbieram nick wysylajacego
             char nickNadawcy[12];
             read(c->cfd,nickNadawcy,12);
+            printf("\nNick nadawcy zaraz po odebraniu:%s.",nickNadawcy);
             
-            
-            //wyodrebnianie ladnego nicka
+            //wyodrebnianie ladnego nicka (zeby nie byl w " ")
             char nickNadawcy2[12];
             iloscCudzyslowiow=0;
             j=0;
@@ -500,7 +545,7 @@ void* cthread (void* arg) {
                 nickNadawcy2[j]=nickNadawcy[i];
                 j++;
             }
-            printf("\nNick nadawcy:%s.",nickNadawcy2);
+            printf("\nNick nadawcy po usunieciu cudzyslowia:%s.",nickNadawcy2);
             
             
             
@@ -511,9 +556,9 @@ void* cthread (void* arg) {
             //odbieram nazwe pokoju (adresata)
             char nazwaPokojuAdresatow[16];
             read(c->cfd,nazwaPokojuAdresatow,16);
+            printf("Nazwa adresata - pokoju - zaraz po odebraniu:%s.",nazwaPokojuAdresatow);
             
-            
-            //wyodrebnianie ladnej nazwy.txt
+            //wyodrebnianie ladnej nazwy.txt (zeby byla bez " ")
             char nazwaPokojuAdresatow2[12];
             iloscCudzyslowiow=0;
             j=0;
@@ -530,7 +575,7 @@ void* cthread (void* arg) {
                 nazwaPokojuAdresatow2[j]=nazwaPokojuAdresatow[i];
                 j++;
             }
-            printf("\nNazwa adresata:%s.",nazwaPokojuAdresatow2);
+            printf("\nNazwa adresata po usunieciu cudzyslowia:%s.",nazwaPokojuAdresatow2);
             
             
             //wysylam potwierdzenie ze odebralam adresata (pokoju) - 3
@@ -541,9 +586,10 @@ void* cthread (void* arg) {
             //odbieram wiadomosci
             char wiadomosc[300];
             read(c->cfd,wiadomosc,300);
+            printf("Tresc wiadomosci tuz po odebraniu:%s.",wiadomosc);
             
             
-            //wyodrebnianie ladnej nazwy.txt
+            //wyodrebnianie ladnej wiadomosci (bez "")
             char wiadomosc2[12];
             iloscCudzyslowiow=0;
             j=0;
@@ -560,7 +606,7 @@ void* cthread (void* arg) {
                 wiadomosc2[j]=wiadomosc[i];
                 j++;
             }
-            printf("\nTresc wiadomosci:%s.",wiadomosc2);
+            printf("\nTresc wiadomosci po usunieciu cudzyslowia:%s.",wiadomosc2);
             
             
             //wysylam wiadomosc do adresata (wszystkich z wczesniej odebranego pokoju)
@@ -568,11 +614,13 @@ void* cthread (void* arg) {
             plik=fopen(nazwaPokojuAdresatow2,"rw");
             printf("\nOtworzylam plik:%s.",nazwaPokojuAdresatow2);
             
-            
+            //zczytywanie ludzi z danego pokoju
             for(i=0;i<20;i++){
                 fgets(tablicaLudziDoWyslaniaWiadomosci[i].nick,10,plik);
             }
             
+            
+            //pomocnicze wyswietlanie
             for(i=0;i<20;i++){
                 printf("\nOsoba do wyslania wiadomosci (element %d:%s.)",i,tablicaLudziDoWyslaniaWiadomosci[i].nick);
                 printf("\nOsoba zalogowana (element %d:%s.)",i,tablicaZalogowanych[i].nick);
@@ -596,9 +644,7 @@ void* cthread (void* arg) {
                     }
                 }
             }
-            
-            
-            
+
             
             printf("\nSkonczylem case 6");
                     close(c->cfd);
