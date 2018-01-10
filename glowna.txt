@@ -6,8 +6,4 @@ hania
 basia
 zosia
 antosia
-sylwia
-lucyna
-iwona
-gaba
-lola
+aaa

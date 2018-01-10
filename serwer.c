@@ -35,25 +35,37 @@ int wybor;
 
 struct cln {
     int cfd;
+    char nick[10];
     struct sockaddr_in caddr;
 };
-
 
 
 void* cthread (void* arg) {
     
     uzytkownik *tabUzytkownikow = malloc(20*sizeof(uzytkownik));
     pokoj *tabPokoi = malloc(20*sizeof(pokoj));
-   // 
+   
     uzytkownik *tabListaOsobDoDodania = malloc(20*sizeof(uzytkownik));
     uzytkownik *tabListaOsobwPokoju = malloc(20*sizeof(uzytkownik));
 
     struct cln* c = (struct cln*)arg;
     
-    int pom = read(c->cfd, &wyborCHAR, sizeof(wyborCHAR));
+    struct cln *tablicaLudziDoWyslaniaWiadomosci = malloc(20*sizeof(c));
+    struct cln *tablicaZalogowanych = malloc(20*sizeof(c));  
+    
+    int petla=1;
     printf("\nPolaczylem sie z:%s." , inet_ntoa((struct in_addr)c->caddr.sin_addr));
-    printf("\nOdebralem wybor:%s.",wyborCHAR);
-        
+    
+   // while(1){
+    printf("\nPoczatek while\n");
+
+    read(c->cfd, &wyborCHAR, 1);
+   
+    //int pom = read(c->cfd, &wyborCHAR, sizeof(wyborCHAR));
+ 
+    printf("\nOdebralem wybor:%s.\n",wyborCHAR);
+    printf("\nOdebralem wybor CHAR:%d, %d.\n",wyborCHAR[0], wyborCHAR[1]);
+    wybor=0;
     wybor=wyborCHAR[0]-'0';
         
     char odebralemWybor[5]="11\n";
@@ -67,11 +79,11 @@ void* cthread (void* arg) {
     sleep(1);
     
     switch(wybor){
-        case 1:
+        case 1:{
             printf("\ncase 1"); //logowanie
-            plik=fopen("uzytkownicy.txt","rw");
-            plik2=0;
-            plik2=open("uzytkownicy.txt",O_WRONLY|O_APPEND);
+            plik=fopen("glowna.txt","rw");
+            //plik2=0;
+            plik2=open("glowna.txt",O_WRONLY|O_APPEND);
             
             //zczytywanie z pliku do tablicy
             for(i=0;i<20;i++){
@@ -82,8 +94,13 @@ void* cthread (void* arg) {
             
             //odbieranie danych od klienta
             sleep(1);
-            pom2=read(c->cfd,myNick,sizeof(myNick));
-            printf("\nOdebralem NICK:%s",myNick);
+
+            pom2=read(c->cfd,&myNick,10); 
+  
+            //pom2=read(c->cfd,myNick,sizeof(myNick));}
+            printf("\nPOM2:%d",pom2);
+            //fsync(c->cfd);
+            printf("\nOdebralem NICK:%s.",myNick);
             
             
             //wyodrebnianie ladnej nazwy
@@ -134,6 +151,15 @@ void* cthread (void* arg) {
                 }
                 write(plik2,"\n",1);
                 write(c->cfd,UdaloSieZalogowac,4);
+                
+                //zapisanie uzytkownika do tablicy zalogowanych na pierwszym wolnym miejscu////////////////////////////////////////////////////////////
+                for(i=0;i<20;i++){
+                    if(tablicaZalogowanych[i].nick==0){
+                        tablicaZalogowanych[i]=*c;
+                        break;
+                }
+                }
+                
             }
             
             //pomocnicze wyswielanie tablicy tabUzytkownikow
@@ -146,12 +172,12 @@ void* cthread (void* arg) {
             close(plik2);
             printf("\nSkonczylem case 1");
             break;
-          
+        }
             
             
-        case 2:
+        case 2:{
             printf("\ncase 2"); //wywylanie listy uzytkownikow
-            plik=fopen("uzytkownicy.txt","rw");
+            plik=fopen("glowna.txt","rw");
             
             for(i=0;i<20;i++){
                 fgets(tabUzytkownikow[i].nick,10,plik);
@@ -193,10 +219,12 @@ void* cthread (void* arg) {
             fclose(plik);
            // close(plik2);
             printf("\nSkonczylem case 2");
+                    close(c->cfd);
+        free(c);
             break;
             
-        
-        case 3:
+        }
+        case 3:{
             printf("\ncase 3"); //wywylanie listy uzytkownikow
             plik=fopen("pokoje.txt","rw");
             
@@ -240,10 +268,12 @@ void* cthread (void* arg) {
             fclose(plik);
            // close(plik2);
             printf("\nSkonczylem case 3");
+                    close(c->cfd);
+        free(c);
             break;
             
-            
-        case 4:
+        } 
+        case 4:{
            // uzytkownik *tabListaOsobwPokoju = malloc(20*sizeof(uzytkownik));
             printf("\ncase 4"); //wysylanie listy uzytkownikow w danym pokoju
             
@@ -252,7 +282,7 @@ void* cthread (void* arg) {
             sleep(1);
             
             pom2=read(c->cfd,nazwaPokoju,sizeof(nazwaPokoju));
-            
+            //pom2=0;
             char nazwaPokoju2[14];
             
             iloscCudzyslowiow=0;
@@ -277,10 +307,16 @@ void* cthread (void* arg) {
             
             printf("\nOtworzylam plik:%s.",nazwaPokoju2);
             
-            for(i=0;i<20;i++){printf("\nTablica osob w pokoju (element %d:%s.",i,tabListaOsobwPokoju[i].nick);}
+          
+            
             for(i=0;i<20;i++){
                 fgets(tabListaOsobwPokoju[i].nick,10,plik);
             }
+            
+            for(i=0;i<20;i++){
+                printf("\nTablica osob w pokoju (element %d:%s.)",i,tabListaOsobwPokoju[i].nick);
+            }
+            
             //usuwanie enterow
             for(i=0;i<20;i++){
                 for(j=0;j<10;j++){
@@ -315,16 +351,20 @@ void* cthread (void* arg) {
             
             fclose(plik);
             printf("\nSkonczylem case 4");
+                    close(c->cfd);
+        free(c);
             break;
+        }
             
-            
-        case 5: //dodawanie grupy
+        case 5: {
+            //dodawanie grupy
             printf("\ncase 5");
             
             char nazwaPokojuDoDodania[16];
             
             sleep(1);
             pom2=read(c->cfd,nazwaPokojuDoDodania,sizeof(nazwaPokojuDoDodania));
+            //pom2=0;
             printf("\nOdebralem nazwe pokoju:%s.",nazwaPokojuDoDodania);
             
             char nazwaPokojuDoDodania2[16];
@@ -359,6 +399,7 @@ void* cthread (void* arg) {
             //odczytanie nicka admina pokoju
             char nickAdmina[12];
             pom2=read(c->cfd,nickAdmina,sizeof(nickAdmina));
+           // pom2=0;
             printf("\nOdebralem nick admina pokoju:%s.",nickAdmina);
             
             char nickAdmina2[12];
@@ -390,6 +431,7 @@ void* cthread (void* arg) {
             //odbieranie listy uzytkownikow w pokoju
             char listaUzytkownikowPokoju[150];
             pom2=read(c->cfd,listaUzytkownikowPokoju,sizeof(listaUzytkownikowPokoju));
+            //pom2=0;
             printf("\nOdebralem liste uzytkownikow pokoju:%s.",listaUzytkownikowPokoju);
                 
             for(i=0;i<150;i++){
@@ -426,14 +468,166 @@ void* cthread (void* arg) {
             close(plik2);           
             
             printf("\nSkonczylem case 5");
+                    close(c->cfd);
+        free(c);
             break;
             
-            
-    }
+        } 
         
-        sleep(1);
-        close(c->cfd);
+        case 6:{
+            printf("\ncase 6"); //wysylanie wiadomosci
+            
+                        
+            //odbieram nick wysylajacego
+            char nickNadawcy[12];
+            read(c->cfd,nickNadawcy,12);
+            
+            
+            //wyodrebnianie ladnego nicka
+            char nickNadawcy2[12];
+            iloscCudzyslowiow=0;
+            j=0;
+            
+            for(i=2;i<12;i++){
+                if(nickNadawcy[i]==34){
+                    iloscCudzyslowiow++;
+                    if(iloscCudzyslowiow==2){ 
+                        nickNadawcy2[j]='\0';
+                        break;
+                    }
+                        continue;
+                }
+                nickNadawcy2[j]=nickNadawcy[i];
+                j++;
+            }
+            printf("\nNick nadawcy:%s.",nickNadawcy2);
+            
+            
+            
+            //wysylam potwierdzenie ze odebralam nick wysylajacego - 12
+            char odebralemNick[3]="12\n";
+            write(c->cfd,odebralemNick,3);
+            
+            //odbieram nazwe pokoju (adresata)
+            char nazwaPokojuAdresatow[16];
+            read(c->cfd,nazwaPokojuAdresatow,16);
+            
+            
+            //wyodrebnianie ladnej nazwy.txt
+            char nazwaPokojuAdresatow2[12];
+            iloscCudzyslowiow=0;
+            j=0;
+            
+            for(i=2;i<12;i++){
+                if(nazwaPokojuAdresatow[i]==34){
+                    iloscCudzyslowiow++;
+                    if(iloscCudzyslowiow==2){ 
+                        nazwaPokojuAdresatow2[j]='\0';
+                        break;
+                    }
+                        continue;
+                }
+                nazwaPokojuAdresatow2[j]=nazwaPokojuAdresatow[i];
+                j++;
+            }
+            printf("\nNazwa adresata:%s.",nazwaPokojuAdresatow2);
+            
+            
+            //wysylam potwierdzenie ze odebralam adresata (pokoju) - 3
+            char odebralemAdresata[3]="13\n";
+            write(c->cfd,odebralemAdresata,3);
+            
+            
+            //odbieram wiadomosci
+            char wiadomosc[300];
+            read(c->cfd,wiadomosc,300);
+            
+            
+            //wyodrebnianie ladnej nazwy.txt
+            char wiadomosc2[12];
+            iloscCudzyslowiow=0;
+            j=0;
+            
+            for(i=2;i<12;i++){
+                if(wiadomosc[i]==34){
+                    iloscCudzyslowiow++;
+                    if(iloscCudzyslowiow==2){ 
+                        wiadomosc2[j]='\0';
+                        break;
+                    }
+                        continue;
+                }
+                wiadomosc2[j]=wiadomosc[i];
+                j++;
+            }
+            printf("\nTresc wiadomosci:%s.",wiadomosc2);
+            
+            
+            //wysylam wiadomosc do adresata (wszystkich z wczesniej odebranego pokoju)
+            //sciaganie listy uzytkownikow w danym pokoju
+            plik=fopen(nazwaPokojuAdresatow2,"rw");
+            printf("\nOtworzylam plik:%s.",nazwaPokojuAdresatow2);
+            
+            
+            for(i=0;i<20;i++){
+                fgets(tablicaLudziDoWyslaniaWiadomosci[i].nick,10,plik);
+            }
+            
+            for(i=0;i<20;i++){
+                printf("\nOsoba do wyslania wiadomosci (element %d:%s.)",i,tablicaLudziDoWyslaniaWiadomosci[i].nick);
+                printf("\nOsoba zalogowana (element %d:%s.)",i,tablicaZalogowanych[i].nick);
+            }
+            
+            //usuwanie enterow
+            for(i=0;i<20;i++){
+                for(j=0;j<10;j++){
+                    if((tablicaLudziDoWyslaniaWiadomosci[i].nick[j]<97 || tablicaLudziDoWyslaniaWiadomosci[i].nick[j]>122) &&(tablicaLudziDoWyslaniaWiadomosci[i].nick[j]>57 ||tablicaLudziDoWyslaniaWiadomosci[i].nick[j]<48)){
+                        tablicaLudziDoWyslaniaWiadomosci[i].nick[j]=0;
+                    }
+                }
+            }
+            //wysylanie do tych z pokoju, ktorzy sa zalogowani
+            for(i=0;i<20;i++){
+                for(j=0;j<20;j++){
+                    if(strcmp(tablicaZalogowanych[i].nick,tablicaLudziDoWyslaniaWiadomosci[j].nick)==0){
+                        write(tablicaZalogowanych[i].cfd,wiadomosc2,300);
+                        printf("\nWyslalem wiadomosc do:%s.",tablicaZalogowanych[i].nick);
+                        sleep(3);
+                    }
+                }
+            }
+            
+            
+            
+            
+            printf("\nSkonczylem case 6");
+                    close(c->cfd);
         free(c);
+            break;
+        }
+        
+        case 7:{
+            printf("\ncase 7"); //wyloguj
+
+           
+            char udaloSieWylogowac[3]="11\n";
+            write(c->cfd,udaloSieWylogowac,3);
+            
+            printf("\nSkonczylem case 7");
+                    close(c->cfd);
+        free(c);
+            break;
+        }
+            
+            
+        }
+       
+       // sleep(3);
+   // }
+        
+       // sleep(1);
+       // close(c->cfd);
+       // free(c);
         return 0;
 }
 int main()
