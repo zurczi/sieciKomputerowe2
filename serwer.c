@@ -69,13 +69,13 @@ char* pobierzDane(int rozmiar, char *buffor,int poczatek){
 }
 
 
-void wyslijZawartoscPliku(char *nazwaPliku ,struct cln* b){
+void wyslijZawartoscPliku(char *nazwaPliku ,struct cln* b,int ktoryCase){
      
-    char tablicaDoWyslania[320];
-                
+    char tablicaDoWyslania[321];
+    tablicaDoWyslania[0]=ktoryCase;            
     FILE *plik=fopen(nazwaPliku,"rw");
                 
-    int i=0; //ilosc znakow w pliku
+    int i=1; //ilosc znakow w pliku
     int znak;
     
     do{
@@ -165,8 +165,8 @@ void* cthread (void* arg) {
                     }
                 }
                 
-                char nazwaWolna[2]="1\n";
-                char nazwaZajeta[2]="2\n";
+                char nazwaWolna[3]="11\n";
+                char nazwaZajeta[3]="12\n";
                 
                 //wczytywanie nowej nazwy do pliku
                 plik3=open("uzytkownicy.txt", O_WRONLY|O_APPEND);
@@ -203,7 +203,7 @@ void* cthread (void* arg) {
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 2:{
                 printf("\nCASE 2");
-                wyslijZawartoscPliku("uzytkownicy.txt",c);
+                wyslijZawartoscPliku("uzytkownicy.txt",c,2);
                 printf("\nZakonczylem case 2");
                 break;
                 
@@ -215,7 +215,7 @@ void* cthread (void* arg) {
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 3:{
                 printf("\nCASE 3");
-                wyslijZawartoscPliku("pokoje.txt",c);
+                wyslijZawartoscPliku("pokoje.txt",c,3);
                 printf("\nZakonczylem case 2");
                 break;
                               
@@ -235,7 +235,7 @@ void* cthread (void* arg) {
                 
                 printf("\nNazwa to:%s.\n",nazwaPokoju);
                 
-                wyslijZawartoscPliku(nazwaPokoju,c);
+                wyslijZawartoscPliku(nazwaPokoju,c,4);
                 
                 printf("\nZakonczylem case 4");
                 break;
@@ -296,7 +296,7 @@ void* cthread (void* arg) {
                 write(nowyPlik,lista,rozmiarListy);
                 
                 //wysylanie potwierdzenia utworzenia
-                char potwierdzenie[2]="5\n";
+                char potwierdzenie[3]="51\n";
                 write(c->cfd,potwierdzenie,2);
                               
                 printf("\nZakonczylem case 5");
