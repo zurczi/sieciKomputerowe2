@@ -40,6 +40,9 @@ typedef struct pokoj{
 }pokoj;
 
 
+uzytkownik *tabUzytkownikow;// = malloc(20*sizeof(uzytkownik));
+//memset(tabUzytkownikow,0,(20*sizeof(uzytkownik)));
+
 int zamienNaLiczbe(int poczatekLiczby, char *buffor){
     
     int setki=buffor[poczatekLiczby]-'0';
@@ -52,21 +55,24 @@ int zamienNaLiczbe(int poczatekLiczby, char *buffor){
     return liczba;
 }
 
-char* pobierzDane(int rozmiar, char *buffor,int poczatek){
+char* pobierzDane(int rozmiar, char buffor1[],int poczatek){
             
-    char *dane = malloc (sizeof (char) * rozmiar);
+    char *dane = malloc (sizeof (char) * (rozmiar+1));
     //memset(dane,0,(sizeof(char)*rozmiar));
-    printf("\nRozmiar danych:%d.",rozmiar);
+   // printf("\nRozmiar danych:%d.",rozmiar);
     //odczytywanie nazwy
     int n=0;
     int i;
     int fordo=poczatek+rozmiar;
-    memset(dane,0,(sizeof(char)*rozmiar));
-    for(i=4;i<fordo;i++){
-        dane[n]=buffor[i];
+    memset(dane,0,(sizeof(char)* (rozmiar+1)));
+    for(i=poczatek;i<fordo;i++){
+       // printf("\n%d %d. %c.",n,i,buffor1[i]);
+        dane[n]=buffor1[i];
         n++;
     }
-    printf("\nDane to:%s.\n",dane);
+    dane[n]='\0';
+
+   // printf("\nDane to:%s.\n",dane);
     
     return dane;
 }
@@ -103,7 +109,10 @@ void* cthread (void* arg) {
     printf("\nJESTEM W WATKU");
     
     struct cln* c = (struct cln*)arg;
-    uzytkownik *tabUzytkownikow = malloc(20*sizeof(uzytkownik));
+    
+    //tablica aktualnie zalogowanych uzytkownikow
+    //uzytkownik *tabUzytkownikow = malloc(20*sizeof(uzytkownik));
+    //memset(tabUzytkownikow,0,(20*sizeof(uzytkownik)));
     
     
     printf("\nPolaczylem sie z:%s.\n", inet_ntoa((struct in_addr)c->caddr.sin_addr));
@@ -127,7 +136,13 @@ void* cthread (void* arg) {
         int wybor=buffor[0]-'0';
        
         printf("\nWybrales opcje:%d.",wybor);
-    
+        
+        if(wybor<0) {
+            exit(0);
+            printf("Jestem mniejszy od zera");
+        }
+        
+        
         switch(wybor){
             //------------------------------------------------------------------------------------------------------------------------------------------------
             //                                                      L O G O W A N I E
@@ -145,6 +160,8 @@ void* cthread (void* arg) {
                 //odczytywanie obecnych uzytkownikow z pliku
                 plik=fopen("uzytkownicy.txt","rw");
                 
+                
+                uzytkownik *tabUzytkownikowWPliku = malloc(20*sizeof(uzytkownik));
                 //oczytywanie z pliku znak po znaku do tablicy uzytkownikow
                 int znak;
                 i=0;
@@ -152,8 +169,8 @@ void* cthread (void* arg) {
                 do{
                     znak=getc(plik);
                     if(znak!=9){ //\t =
-                        tabUzytkownikow[i].nick[j]=znak;
-                        tabUzytkownikow[i].nfd=c->cfd;
+                        tabUzytkownikowWPliku[i].nick[j]=znak;
+                        tabUzytkownikowWPliku[i].nfd=c->cfd;
                         j++;
                     }
                     else{
@@ -163,7 +180,7 @@ void* cthread (void* arg) {
                 }
                 while(znak!=EOF);
                 
-                //liczenie czy w pliku sa uzytkownicy o tej samej nazwie
+                //liczenie czy w tablicy zalogowanych sa uzytkownicy o tej samej nazwie
                 int ile=0;
                 for(i=0;i<20;i++){
                     if(strncmp(tabUzytkownikow[i].nick,nick,rozmiarNicka)==0){
@@ -172,22 +189,52 @@ void* cthread (void* arg) {
                     }
                 }
                 
-                char nazwaWolna[3]="11\n";
-                char nazwaZajeta[3]="12\n";
+                
+                //liczenie czy w tablicy wszystkich uzytkownikow sa uzytkownicy o tej samej nazwie
+                int ileWPliku=0;
+                for(i=0;i<20;i++){
+                    if(strncmp(tabUzytkownikowWPliku[i].nick,nick,rozmiarNicka)==0){
+                        ileWPliku++;
+                        break;
+                    }
+                }
+                
+                char udaloSieZalogowac[3]="11\n";
+                char juzZalogowany[3]="12\n";
                 
                 //wczytywanie nowej nazwy do pliku
                 plik3=open("uzytkownicy.txt", O_WRONLY|O_APPEND);
+               
+                //znajdowanie indeksu pierwszego wolnego miejsca w tab uzyta
+                int indeks=0;
+                for(i=0;i<20;i++){
+                    if(tabUzytkownikow[i].nick[0]==0)
+                       break;
+                }
+                indeks=i;
                 
-                if(ile==0){
+                printf("\nIle w pliku:%d",ileWPliku);
+                printf("\nIle:%d",ileWPliku);
+                
+                if(ileWPliku==0){
                     write(plik3,nick,rozmiarNicka);
                     write(plik3,"\t",1);
                     printf("\nZapisalem do pliku");
-                    write(c->cfd,nazwaWolna,3);
+                    write(c->cfd,udaloSieZalogowac,3);
+                    strcpy(tabUzytkownikow[indeks].nick,nick);
+                    tabUzytkownikow[indeks].nfd=c->cfd;
                 }
-                else{
-                    printf("\nNazwa uzytkownika zajeta");
-                    //TODO jezeli nie ma tkiego w pliku to go wpisuje, jak jest to loguje, chyba ze jest w tab zalogowanychto wywalam
-                    write(c->cfd,nazwaZajeta,3);
+                if(ileWPliku>0 && ile==0){
+                    printf("\nNazwa istnieje, ale nie jest zalogowany, loguje");
+                    strcpy(tabUzytkownikow[indeks].nick,nick);
+                    tabUzytkownikow[indeks].nfd=c->cfd;
+                    write(c->cfd,udaloSieZalogowac,3);
+                }
+                
+                if(ileWPliku>0 && ile>0){
+                    printf("\nUzytkownik o podanej nazwie jest juz zalogowany");
+                    write(c->cfd,juzZalogowany,3);
+                    close(c->cfd);
                 }
                 
                 //pomocnicze wyswietlenie tablicy uzytkownikow
@@ -201,7 +248,7 @@ void* cthread (void* arg) {
                 break;
                 
         }
-                //TODO tablica zalogowanych cfd 
+                
                 
               
                 
@@ -212,10 +259,7 @@ void* cthread (void* arg) {
                 printf("\n\n\nCASE 2");
                 wyslijZawartoscPliku("uzytkownicy.txt",c,2);
                 printf("\nZakonczylem case 2");
-                break;
-                
-                //TODO czy tu nie musi byc cos pozamykane
-                
+                break;                
             }
             //------------------------------------------------------------------------------------------------------------------------------------------------
             //                                      W Y S Y L A N I E      L I S T Y    P O K O I
@@ -224,10 +268,7 @@ void* cthread (void* arg) {
                 printf("\n\n\nCASE 3");
                 wyslijZawartoscPliku("pokoje.txt",c,3);
                 printf("\nZakonczylem case 2");
-                break;
-                              
-                //TODO czy tu nie musi byc cos pozamykane
-                
+                break;                
             }
                 
             //------------------------------------------------------------------------------------------------------------------------------------------------
@@ -257,57 +298,65 @@ void* cthread (void* arg) {
             case 5:{
                 printf("\n\n\nCASE 5");
                 
-                int rozmiar=zamienNaLiczbe(1,buffor);
-                
-                //char nazwa[rozmiar];
-                //strncpy(nazwa,pobierzDane(rozmiar,buffor,4),rozmiar);
-                
-                char * nazwa = malloc (sizeof (char) * rozmiar);
-                nazwa = pobierzDane(rozmiar,buffor,4);
-      
+                int rozmiarNazwy=zamienNaLiczbe(1,buffor);
+                char * nazwa = malloc (sizeof (char) * rozmiarNazwy);
+                nazwa = pobierzDane(rozmiarNazwy,buffor,4);
                 printf("\nNazwa to:%s.\n",nazwa);
                 
                 
                 //odczyt nicku admina
-                int x=4+rozmiar;
-                int rozmiarAdmina=zamienNaLiczbe(x,buffor);
+                int polozenieRozmiaru=4+rozmiarNazwy;
+                int rozmiarAdmina=zamienNaLiczbe(polozenieRozmiaru,buffor);
                 
-                //char nickAdmina[rozmiarAdmina];
              
-                int pocz=4+rozmiar+rozmiarAdmina+3;
+                int skadOdczytywac=polozenieRozmiaru+3;
                 char * nickAdmina = malloc (sizeof (char) * rozmiarAdmina);
-                nickAdmina = pobierzDane(rozmiarAdmina,buffor,pocz);
-                
-                //strncpy(nickAdmina,pobierzDane(rozmiarAdmina,buffor,pocz),rozmiarAdmina);
+                nickAdmina = pobierzDane(rozmiarAdmina,buffor,skadOdczytywac);
                 printf("\nNick admina to:%s.",nickAdmina);
                 
                 
+                
+                //odczytywanie nazwy pokoju bez .txt
+                int polozenieCzystejNazwy=skadOdczytywac+rozmiarAdmina;
+                int rozmiarCzystejNazwy=zamienNaLiczbe(polozenieCzystejNazwy,buffor);
+                
+                skadOdczytywac=polozenieCzystejNazwy+3;
+                char * czystaNazwa = malloc (sizeof (char) * rozmiarCzystejNazwy);
+                czystaNazwa = pobierzDane(rozmiarCzystejNazwy,buffor,skadOdczytywac);
+                printf("\nCzysta nazwa pokoju to:%s.",czystaNazwa);
+                
+                //zapis do pliku nazwy pokoju
+                plik3=open("pokoje.txt", O_WRONLY|O_APPEND);
+                write(plik3,czystaNazwa,rozmiarCzystejNazwy);
+                write(plik3,"\t",1);
+                close(plik3);
+                
                 //odczyt listy uzytkownikow
-                int rozmiarListy=zamienNaLiczbe(rozmiar,buffor);
+                polozenieRozmiaru=skadOdczytywac+rozmiarCzystejNazwy;
+                skadOdczytywac=polozenieRozmiaru+3;
                 
-                //char lista[rozmiarListy];
- 
-                pocz=pocz+rozmiarListy+3;
-                
+                int rozmiarListy=zamienNaLiczbe(polozenieRozmiaru,buffor);
                 char * lista = malloc (sizeof (char) * rozmiarListy);
-                lista = pobierzDane(rozmiarListy,buffor,pocz);
-                
-                //strncpy(lista,pobierzDane(rozmiarListy,buffor,pocz),rozmiarListy);
+                lista = pobierzDane(rozmiarListy,buffor,skadOdczytywac);
                 printf("\nLista uzytkownikow to:%s.",lista);
                 
-                
+                //sleep(10);
                 //utworzenie i zapis do pliku
-                int nowyPlik=open(nazwa,O_WRONLY|O_APPEND);
+                plik=fopen(nazwa,"aw+");  
+                fclose(plik);
+                int nowyPlik=open(nazwa,O_WRONLY|O_APPEND);        //dwa razy ten sam plik ??   tu dopisalam create
                 write(nowyPlik,nickAdmina,rozmiarAdmina);
                 write(nowyPlik,"\t",1);
                 write(nowyPlik,lista,rozmiarListy);
+                close(nowyPlik);
                 
                 //wysylanie potwierdzenia utworzenia
-                char potwierdzenie[3]="51\n";
-                write(c->cfd,potwierdzenie,3);
+                char potwierdzenie[4]="5\t1\n";
+                write(c->cfd,potwierdzenie,4);
                               
                 printf("\nZakonczylem case 5");
-                close(nowyPlik);
+                
+              //  fclose(plik);   TU ZAKOMENTOWALAM 
                 break;
                 
             }
@@ -378,7 +427,7 @@ void* cthread (void* arg) {
                 fclose(plik);
                 
                 //przygotowanie wiadomosci do tablicaDoWyslania
-                char * gotowaWiadomosc = malloc (sizeof (char) * (1+1+rozmiarNickuNadawcy+1+rozmiarPokoju+1+rozmiarWiadomosci+1));
+                char * gotowaWiadomosc = malloc (sizeof (char) * (1+1+rozmiarNickuNadawcy+1+rozmiarPokoju+1+rozmiarWiadomosci+1+1));
                 int skip = 0;
                 gotowaWiadomosc[0]='6';
                 gotowaWiadomosc[1]='\t';
@@ -403,6 +452,8 @@ void* cthread (void* arg) {
                 skip +=rozmiarWiadomosci;
                 gotowaWiadomosc[skip]='\n';
                 skip+=1;
+                gotowaWiadomosc[skip]='\0';
+                skip+=1;
                      
                 printf("\nWiadomosc:%s.",gotowaWiadomosc);
                 
@@ -412,8 +463,12 @@ void* cthread (void* arg) {
                         for(j=0;j<20;j++){
                             if(strcmp(tabUzytkownikow[j].nick,tabUzytkownikowwPokoju[i].nick)==0){
                                 write(tabUzytkownikow[j].nfd,gotowaWiadomosc,skip);
+                                
                             }
                         }
+                    }
+                    else{
+                        write(c->cfd,"6\t1\n",4);
                     }
                 }
                 //wysylanie potwierdzenia utworzeniatabUzytkownikow
@@ -471,9 +526,12 @@ void* cthread (void* arg) {
 
 int main()
 {
+    
+    tabUzytkownikow = malloc(20*sizeof(uzytkownik));
+    
     pthread_t tid;
     
-    uint16_t port = 1234;
+    uint16_t port = 1236;
     //char ip[30] = "192.168.0.15";//INADDR_ANY;
     //strcpy(ip,INADDR_ANY);
     addr.sin_family = PF_INET;
