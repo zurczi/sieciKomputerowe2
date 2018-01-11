@@ -223,12 +223,14 @@ void* cthread (void* arg) {
                     write(c->cfd,udaloSieZalogowac,3);
                     strcpy(tabUzytkownikow[indeks].nick,nick);
                     tabUzytkownikow[indeks].nfd=c->cfd;
+                    printf("\nCFD UZYTKOWNIKA:%d\n",tabUzytkownikow[indeks].nfd); 
                 }
                 if(ileWPliku>0 && ile==0){
                     printf("\nNazwa istnieje, ale nie jest zalogowany, loguje");
                     strcpy(tabUzytkownikow[indeks].nick,nick);
                     tabUzytkownikow[indeks].nfd=c->cfd;
                     write(c->cfd,udaloSieZalogowac,3);
+                    printf("\nCFD UZYTKOWNIKA:%d\n",tabUzytkownikow[indeks].nfd); 
                 }
                 
                 if(ileWPliku>0 && ile>0){
@@ -367,7 +369,7 @@ void* cthread (void* arg) {
             //                               W Y S Y L A N I E      W I A D O M O S C I     D O     P O K O J U
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 6:{
-                printf("\n\n\nCASE 6");
+              //  printf("\n\n\nCASE 6");
                 
                 //odczyt nicku nadawcy
                 int rozmiarNickuNadawcy=zamienNaLiczbe(1,buffor);
@@ -377,7 +379,7 @@ void* cthread (void* arg) {
                 char * nickNadawcy = malloc (sizeof (char) * rozmiarNickuNadawcy);
                 nickNadawcy = pobierzDane(rozmiarNickuNadawcy,buffor,4);
                 
-                printf("\nNick nadawcy to:%s.\n",nickNadawcy);
+              // printf("\nNick nadawcy to:%s.\n",nickNadawcy);
                 
                 
                 //odczyt nazwy pokoju
@@ -391,7 +393,7 @@ void* cthread (void* arg) {
                 char * nazwaPokoju = malloc (sizeof (char) * rozmiarPokoju);
                 nazwaPokoju = pobierzDane(rozmiarPokoju,buffor,pom);
                
-                printf("\nNazwa Pokojuto:%s.",nazwaPokoju);
+            //    printf("\nNazwa Pokojuto:%s.",nazwaPokoju);
                 
                 
                 //odczyt tresci wiadomosci
@@ -403,7 +405,7 @@ void* cthread (void* arg) {
                 char * wiadomosc = malloc (sizeof (char) * rozmiarWiadomosci);
                 wiadomosc = pobierzDane(rozmiarPokoju,buffor,pom);
                 
-                printf("\nTresc wiadomosci to:%s.",wiadomosc);
+               // printf("\nTresc wiadomosci to:%s.\n",wiadomosc);
                   
                 //odczytywanie z pliku nickow osob znajdujacych sie w pokoju
                 FILE *plik=fopen(nazwaPokoju,"rw");
@@ -455,15 +457,18 @@ void* cthread (void* arg) {
                 gotowaWiadomosc[skip]='\0';
                 skip+=1;
                      
-                printf("\nWiadomosc:%s.",gotowaWiadomosc);
-                
+              //  printf("\nWiadomosc:%s.\n",gotowaWiadomosc);
+               // printf("\nLAMBADA\n");
                 // uzytkownicy z pokoju
                 for(i=0;i<20;i++){
                     if(strcmp(tabUzytkownikowwPokoju[i].nick,nickNadawcy)!=0){
                         for(j=0;j<20;j++){
-                            if(strcmp(tabUzytkownikow[j].nick,tabUzytkownikowwPokoju[i].nick)==0){
+                            if(strncmp(tabUzytkownikow[j].nick,tabUzytkownikowwPokoju[i].nick,15)==0 && tabUzytkownikow[j].nick[0]!=0){
+                                printf("\n .%d. .%s. \n",tabUzytkownikow[j].nfd,tabUzytkownikow[j].nick);
                                 write(tabUzytkownikow[j].nfd,gotowaWiadomosc,skip);
-                                
+                                printf("CFD GLOWNEGO:%d.",c->cfd);
+                                //write(c->cfd,"6\t2\n",4);
+                                //printf("\nWyslalem wiadomosc do:%s.",tabUzytkownikow[j].nick);
                             }
                         }
                     }
@@ -475,7 +480,7 @@ void* cthread (void* arg) {
                 //char potwierdzenie[2]="6\n";
                 //write(c->cfd,potwierdzenie,2);
                 
-                printf("\nZakonczylem case 6");
+               // printf("\nZakonczylem case 6");
                 break;
             }
         
