@@ -12,7 +12,7 @@ import javafx.scene.control.TextArea;
  *
  * @author Anka
  */
-public class Watek implements Runnable {
+public class Watek extends Thread {
     private Polaczenie polaczenie;
     private Thread watek;
     @FXML 
@@ -48,13 +48,13 @@ public class Watek implements Runnable {
         while(!Thread.currentThread().isInterrupted()){
      try{
          System.out.println("Hello from thread");
-         String wiadomosc=this.polaczenie.readLine();
-         this.okno.appendText(wiadomosc);
+        // String wiadomosc=this.polaczenie.readLine();
+       //  this.okno.appendText(wiadomosc);
        Thread.sleep(30);
      } catch (InterruptedException ex) { 
      }
      }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

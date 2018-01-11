@@ -40,7 +40,7 @@ import javafx.stage.WindowEvent;
  */
 public class FXMLDocumentController implements Initializable {
     private Polaczenie polaczenie;
-    private Watek watek;
+   // private Watek watek;
     private Grupa grupa;
     private Uzytkownik uzytkownik;
     @FXML
@@ -63,6 +63,8 @@ public class FXMLDocumentController implements Initializable {
     private TextField nickText;
     @FXML
     private Button WylogujSie;
+    @FXML
+    private Button wybierzPokoj;
    
     @FXML
     private TextArea trescWiadomosci;
@@ -71,21 +73,87 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button przyciskWyslij;
     private Funkcje funkcje;
-    Watek nowyWatek;
+   // Watek nowyWatek;
+    
+    public String przygotujWiadomosc(String case1,String nickUzyt){
+        String wiadomosc = "";
+        String [] sklejanie= new String[125];
+               sklejanie[0]=case1;
+               String [] nick = nickUzyt.split("");
+               int k=100;
+               for(int i=1;i<4;i++){
+                   sklejanie[i]=String.valueOf(nickUzyt.length()%k);
+                           k=k/10;
+               }
+               for(int i=4;i<nickUzyt.length();i++){
+                   sklejanie[i]=nick[i];
+               }
+               for(int i=nickUzyt.length();i<125;i++){
+                   sklejanie[i]=" ";
+               }
+               wiadomosc=sklejanie.toString();
+        return wiadomosc;
+    }
+    public String przygotujWiadomosc2(String case1){
+          String wiadomosc = case1;
+      //  String [] sklejanie= new String[125];
+               //sklejanie[0]=case1;
+               
+               for(int i=1;i<125;i++){
+                   wiadomosc=wiadomosc+" ";
+               }
+              // wiadomosc=sklejanie.toString();
+        return wiadomosc;
+    }
     public FXMLDocumentController() throws UnknownHostException {
       ///  this.polaczenie=new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
         this.polaczenie=null;
        // this.watek=new Watek();
     }
-    
+    /**
+     * WYBOR POKOJU CASE 4
+     * @param event 
+     */
+    @FXML
+    void handleWybierzPokoj(ActionEvent event){
+        try{
+            String wybrany=listaPokoi.getSelectionModel().selectedItemProperty().getValue().toString();
+            String wiadomosc="";
+            wiadomosc=wiadomosc+"4";
+            wybrany=wybrany+".txt";
+               int dl=wybrany.length();
+               String str=String.valueOf(dl);
+               int dlstr=str.length();
+               if(dlstr==1){
+                 wiadomosc=wiadomosc+"00"+str;
+               }
+                 else{
+                  wiadomosc=wiadomosc+"0"+str;
+               }
+             wiadomosc=wiadomosc+wybrany;
+             int dlwiadomosci=wiadomosc.length();
+               for(int i=dlwiadomosci;i<125;i++){
+                   wiadomosc=wiadomosc+" ";
+               }
+               System.out.println(wiadomosc);
+               this.polaczenie.println(wiadomosc);
+               System.out.println("wyslalam");
+               String odbior=this.polaczenie.readLine();
+            //System.out.println(wybrany);
+        }catch(Exception e){
+            this.polaczenie.close();
+        }
+    }
     @FXML 
     void handleWylogujSie(ActionEvent event){
-        this.polaczenie.println("7");
-        String odbior=this.polaczenie.readLine();
-        if(odbior.equals("11")){
-            this.polaczenie.close();
-            nowyWatek.getWatek().interrupt();
-            nowyWatek.getWatek().stop();}
+       // this.polaczenie.println("7");
+       // String odbior=this.polaczenie.readLine();
+       // if(odbior.equals("11")){
+       String wiad=przygotujWiadomosc("7", nickText.getText());
+       this.polaczenie.println(wiad);            
+       this.polaczenie.close();
+          //  nowyWatek.getWatek().interrupt();
+           // nowyWatek.getWatek().stop();}
     }
     @FXML 
     void handleWyslijWiadomosc(ActionEvent event){
@@ -111,10 +179,12 @@ public class FXMLDocumentController implements Initializable {
                                     if(odbior.equals("13")){
                                         System.out.println("odbior3");
                                         this.oknoWiadomosci.appendText(this.nickText.getText()+" : "+this.trescWiadomosci.getText());
-                                        this.polaczenie.println("\""+this.trescWiadomosci.getText()+"\"");
-                                        
+                                        //this.polaczenie.println("\""+this.trescWiadomosci.getText()+"\"");
+                                        this.polaczenie.println("\""+"siema"+"\"");
                                     }
+                                    
                                 }
+                                    
                     this.trescWiadomosci.getText();
                         }
               polaczenie.close();
@@ -125,28 +195,27 @@ public class FXMLDocumentController implements Initializable {
     }
     
     /**
-     * Funkcja obsługująca klawisz "Odśwież listę pokoi" 
+     * ODSWIEZ LISTE POKOI CASE 3
      * @param event 
      */
     @FXML
     void handleZaladujListePokoi(ActionEvent event) {
-        Polaczenie polaczenie = null;
-        try {
-                polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
-                polaczenie.println("3");
-                String odbior=polaczenie.readLine();
-                if (odbior.equals("11")) {
-                    String uzyt = "";
-                        uzyt=polaczenie.readLine();
-                        String uzyt2=  uzyt.replace(" ","");
-                        String [] uzyt3=uzyt2.split("\t");
-                        List<String> uzyt4=Arrays.asList(uzyt3);
-                        listaPokoi.setItems(FXCollections.observableArrayList(uzyt4));
-                        }
-             polaczenie.close();
-                }
+            try{
+                System.out.println("jestem");
+               String wiadomosc = "3";
+               for(int i=1;i<125;i++){
+                   wiadomosc=wiadomosc+" ";
+               }
+               System.out.println(wiadomosc);
+               this.polaczenie.println(wiadomosc);
+                String uzyt=this.polaczenie.readLine();
+                String uzyt2=  uzyt.replace(" ","");
+                String [] uzyt3=uzyt2.split("\t");
+                List<String> uzyt4=Arrays.asList(uzyt3);
+                listaPokoi.setItems(FXCollections.observableArrayList(uzyt4));
+                }    
          catch (Exception ex) {
-             polaczenie.close();
+             this.polaczenie.close();
         }
     } 
     /**
@@ -167,54 +236,95 @@ public class FXMLDocumentController implements Initializable {
         }
     }
     /**
-     * Funkcja obsługująca klawisz "Odśwież listę klientów" 
+     * ODSWIEZ LISTE KLIENTOW CASE 2
      * @param event 
      */
     @FXML
     void handleZaladujListeUzytkownikow(ActionEvent event) {
-        Polaczenie polaczenie = null;
+        
         try {
-               polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
-                polaczenie.println("2");
-                String odbior=polaczenie.readLine();
-                if (odbior.equals("11")) {
+            System.out.println("jestem");
+               String wiadomosc = "2";
+
+               for(int i=1;i<125;i++){
+                   wiadomosc=wiadomosc+" ";
+               }
+             // String wiad=przygotujWiadomosc2("2");
+               // polaczenie.println("2");
+               System.out.println(wiadomosc);
+               this.polaczenie.println(wiadomosc);
+               // String odbior=this.polaczenie.readLine();
+               
                     String uzyt = "";
-                        uzyt=polaczenie.readLine();
+                        uzyt=this.polaczenie.readLine();
                         String uzyt2=  uzyt.replace(" ","");
                         String [] uzyt3=uzyt2.split("\t");
                         List<String> uzyt4=Arrays.asList(uzyt3);
                         listaUzytkownikow.setItems(FXCollections.observableArrayList(uzyt4));
-                        }
-             polaczenie.close();
+                        
+        
                 }
          catch (Exception ex) {
              polaczenie.close();
         }
     } 
    
-    //zaloguj sie
+    /**
+     * ZALOGUJ SIE CASE 1 GLOWNE POLACZENIE 
+     * @param event 
+     */
+    
     @FXML
-    void handleButtonAction(ActionEvent event) {
-       // Polaczenie polaczenie = null;
+    void handleZalogujSie(ActionEvent event) {
+       String wiadomosc="";
+       //String [] sklejanie= new String[125];
         try {
                this.polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
-           this.polaczenie.println("1");
-            String czyOdbior= this.polaczenie.readLine();
-            if (czyOdbior.equals("11")) {
-                this.polaczenie.println("\""+nickText.getText()+"\"");
-                String odbior=this.polaczenie.readLine();
-                if(odbior.equals("100")){
-                    informacje.setText("Nie udało się zalogować. Taki nick juz istnieje");
-                }else if(odbior.equals("101")) {
-                    informacje.setText("Udało się zalogować poprawnie");
-                    this.uzytkownik.setNick(nickText.getText());
-                    nowyWatek=new Watek(this.polaczenie,this.oknoWiadomosci);
+               System.out.println("polaczylem");
+               wiadomosc=wiadomosc+"1";
+               String [] nick = nickText.getText().split("");
+               int k=100;
+               int dl=nickText.getText().length();
+               String str=String.valueOf(dl);
+               int dlstr=str.length();
+               if(dlstr==1){
+                 wiadomosc=wiadomosc+"00"+str;
+               }
+                 else{
+                  wiadomosc=wiadomosc+"0"+str;
+               }
+             wiadomosc=wiadomosc+nickText.getText();
+             int dlwiadomosci=wiadomosc.length();
+               for(int i=dlwiadomosci;i<125;i++){
+                   wiadomosc=wiadomosc+" ";
+               }
+               System.out.println(wiadomosc);
+               this.polaczenie.println(wiadomosc);
+               System.out.println("wyslalam");
+               String odbior=this.polaczenie.readLine();
+               if(odbior.equals("1")){
+                   informacje.setText("Udało się zalogować");
+               }else if(odbior.equals("2")){
+                   informacje.setText("Nie udało się zalogować. Nazwa jest zajęta");
+                   this.polaczenie.close();
+               }
+              
+                  /*  nowyWatek=new Watek(this.polaczenie,this.oknoWiadomosci);
                     Thread th=new Thread(nowyWatek);
                     th.start();
-                    nowyWatek.setWatek(th);
+                    synchronized(th){
+                          try {
+                            System.out.println("Wait for list.");
+                             th.wait();
+                            }catch (InterruptedException e){
+                                System.out.println("Error in wait thread.");
+                                e.printStackTrace();
+                            }
+                    }
+                   // nowyWatek.setWatek(th);
                 }
-                }
-           // polaczenie.close();
+                }*/
+           
             
         } catch (Exception ex) {
            this.polaczenie.close();
@@ -229,7 +339,7 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //this.uzytkownik=new Uzytkownik("");
-        listaPokoi.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
+      /*  listaPokoi.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 //System.out.println(newValue);
@@ -247,7 +357,7 @@ public class FXMLDocumentController implements Initializable {
                         String uzytPok2=  uzytPok.replace(" ","");
                         String [] uzytPok3=uzytPok2.split("\t");
                         List<String> uzytPok4=Arrays.asList(uzytPok3);
-                       // System.out.println(uzytPok4);
+                        System.out.println(uzytPok4);
                         listaUzytkownikow.setItems(FXCollections.observableArrayList(uzytPok4));
                         }
               //  System.out.println("zaraz wylacze");
@@ -256,7 +366,7 @@ public class FXMLDocumentController implements Initializable {
              polaczenie.close();
         }    
             }
-        });
+        });*/
     }    
     
 }

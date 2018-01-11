@@ -6,6 +6,7 @@
 package Klasy;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -37,11 +38,17 @@ public class Polaczenie {
      * @param message 
      */
     public void println(String message) {
-        PrintWriter writer;
+        //PrintWriter writer;
         try {
-            writer = new PrintWriter(new OutputStreamWriter(
-                                     socket.getOutputStream()), true);
-            writer.println(message);
+           // writer = new PrintWriter(new OutputStreamWriter( socket.getOutputStream()), true);
+          //  writer.println(message);
+          //writer.print(message);  
+          //writer.flush();
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+
+            byte[] bytes = message.getBytes();
+            dataOutputStream.write(bytes);
+            dataOutputStream.flush();
        
         } catch (IOException e){ 
             System.out.println("Nie udało sie wyslac");
