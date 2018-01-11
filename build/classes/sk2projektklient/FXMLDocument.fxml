@@ -29,5 +29,6 @@
       <TextField fx:id="nazwaPokoju" layoutX="26.0" layoutY="572.0" text="Podaj nazwe pokoju" />
       <Button fx:id="dodajDoPokoju" layoutX="225.0" layoutY="572.0" mnemonicParsing="false" onAction="#handleDodajDoPokoju" text="Dodaj do pokoju" />
       <Button fx:id="zatwierdz" layoutX="380.0" layoutY="572.0" mnemonicParsing="false" onAction="#handleZatwierdz" prefHeight="25.0" prefWidth="82.0" text="Zatwierdź" />
+      <Button fx:id="usunPokoj" layoutX="510.0" layoutY="572.0" mnemonicParsing="false" onAction="#handleUsunPokoj" text="Usun Pokoj" />
     </children>
 </AnchorPane>

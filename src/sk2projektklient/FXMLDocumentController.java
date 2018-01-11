@@ -103,8 +103,8 @@ public class FXMLDocumentController implements Initializable {
         return wiad;
     }
 
-    public String dodajSpacje(String wiad, int odIlu) {
-
+    public String dodajSpacje(String wiad) {
+        int odIlu=wiad.length();
         for (int i = odIlu; i < 125; i++) {
             wiad = wiad + " ";
         }
@@ -134,6 +134,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     void handleZatwierdz(ActionEvent event) {
         try {
+            
             ObservableList lista = listaPokoi.getItems();
             String listaUzyt;
             listaUzyt = lista.toString();
@@ -143,40 +144,44 @@ public class FXMLDocumentController implements Initializable {
             replace = replace.replace(" ", "\t");
             replace = replace + "\n";
             System.out.println(replace);
-            String wiadomosc = "";
-            wiadomosc = wiadomosc + "5";
+            String wiadomosc = "5";  
+            //wiadomosc = wiadomosc + "5";
             String x = this.nazwaPokoju.getText() + ".txt";
-            int dl = x.length();
+            wiadomosc=wiadomosc+dodajRozmiar(x);
+            /*int dl = x.length();
             String str = String.valueOf(dl);
             int dlstr = str.length();
             if (dlstr == 1) {
                 wiadomosc = wiadomosc + "00" + str;
             } else {
                 wiadomosc = wiadomosc + "0" + str;
-            }
+            }*/
             wiadomosc = wiadomosc + x;
             String nazwaAdmina = this.nickText.getText();
-            dl = nazwaAdmina.length();
+            wiadomosc=wiadomosc+dodajRozmiar(nazwaAdmina);
+           /* dl = nazwaAdmina.length();
             str = String.valueOf(dl);
             dlstr = str.length();
             if (dlstr == 1) {
                 wiadomosc = wiadomosc + "00" + str;
             } else {
                 wiadomosc = wiadomosc + "0" + str;
-            }
+            }*/
             wiadomosc = wiadomosc + nazwaAdmina;
 
             String nazwaGrupy = this.nazwaPokoju.getText();
-            dl = nazwaGrupy.length();
+            wiadomosc=wiadomosc+dodajRozmiar(nazwaGrupy);
+            /*dl = nazwaGrupy.length();
             str = String.valueOf(dl);
             dlstr = str.length();
             if (dlstr == 1) {
                 wiadomosc = wiadomosc + "00" + str;
             } else {
                 wiadomosc = wiadomosc + "0" + str;
-            }
+            }*/
             wiadomosc = wiadomosc + nazwaGrupy;
-
+            wiadomosc=wiadomosc+dodajRozmiar(replace);
+/*      
             dl = replace.length();
             str = String.valueOf(dl);
             dlstr = str.length();
@@ -184,12 +189,13 @@ public class FXMLDocumentController implements Initializable {
                 wiadomosc = wiadomosc + "00" + str;
             } else {
                 wiadomosc = wiadomosc + "0" + str;
-            }
+            }*/
             wiadomosc = wiadomosc + replace;
-            int dlwiadomosci = wiadomosc.length();
+           /* int dlwiadomosci = wiadomosc.length();
             for (int i = dlwiadomosci; i < 125; i++) {
                 wiadomosc = wiadomosc + " ";
-            }
+            }*/
+           wiadomosc=dodajSpacje(wiadomosc);
             System.out.println(wiadomosc);
             this.polaczenie.println(wiadomosc);
             System.out.println("wyslalam");
@@ -208,22 +214,24 @@ public class FXMLDocumentController implements Initializable {
         try {
             String wybrany = listaPokoi.getSelectionModel().selectedItemProperty().getValue().toString();
             this.obecnaGrupa.setText(wybrany);
-            String wiadomosc = "";
-            wiadomosc = wiadomosc + "4";
+            String wiadomosc = "4";
+           // wiadomosc = wiadomosc + "4";
             wybrany = wybrany + ".txt";
-            int dl = wybrany.length();
+            wiadomosc=wiadomosc+dodajRozmiar(wybrany);
+          /*  int dl = wybrany.length();
             String str = String.valueOf(dl);
             int dlstr = str.length();
             if (dlstr == 1) {
                 wiadomosc = wiadomosc + "00" + str;
             } else {
                 wiadomosc = wiadomosc + "0" + str;
-            }
+            }*/
             wiadomosc = wiadomosc + wybrany;
-            int dlwiadomosci = wiadomosc.length();
+            wiadomosc=dodajSpacje(wiadomosc);
+         /*   int dlwiadomosci = wiadomosc.length();
             for (int i = dlwiadomosci; i < 125; i++) {
                 wiadomosc = wiadomosc + " ";
-            }
+            }*/
             System.out.println(wiadomosc);
             this.polaczenie.println(wiadomosc);
         } catch (Exception e) {
@@ -232,9 +240,68 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
+    void handleUsunPokoj(ActionEvent event) {
+        String wybrany = this.obecnaGrupa.getText();
+        String wiadomosc = "8";
+        String x = this.obecnaGrupa.getText()+".txt";
+        wiadomosc=wiadomosc+dodajRozmiar(x);
+       /* int dl = x.length();
+        String str = String.valueOf(dl);
+        int dlstr = str.length();
+        if (dlstr == 1) {
+            wiadomosc = wiadomosc + "00" + str;
+        } else {
+            wiadomosc = wiadomosc + "0" + str;
+        }*/
+        wiadomosc = wiadomosc + x;
+        
+        x = this.nickText.getText();
+        wiadomosc=wiadomosc+dodajRozmiar(x);
+      /*  dl = x.length();
+        str = String.valueOf(dl);
+        dlstr = str.length();
+        if (dlstr == 1) {
+            wiadomosc = wiadomosc + "00" + str;
+        } else {
+            wiadomosc = wiadomosc + "0" + str;
+        }*/
+        wiadomosc = wiadomosc + x;
+        
+        x = this.obecnaGrupa.getText();
+        wiadomosc=wiadomosc+dodajRozmiar(x);
+       /* dl = x.length();
+        str = String.valueOf(dl);
+        dlstr = str.length();
+        if (dlstr == 1) {
+            wiadomosc = wiadomosc + "00" + str;
+        } else {
+            wiadomosc = wiadomosc + "0" + str;
+        }*/
+        wiadomosc = wiadomosc + x;
+        wiadomosc=dodajSpacje(wiadomosc);
+        System.out.println(wiadomosc);
+        this.polaczenie.println(wiadomosc);
+    }
+
+    @FXML
     void handleWylogujSie(ActionEvent event) {
-        //String wiad = przygotujWiadomosc("7", nickText.getText());
-        //  this.polaczenie.println(wiad);
+        String wiadomosc = "7";
+        String x = this.nickText.getText();
+        wiadomosc=wiadomosc+dodajRozmiar(x);
+       /* int dl = x.length();
+        String str = String.valueOf(dl);
+        int dlstr = str.length();
+        if (dlstr == 1) {
+            wiadomosc = wiadomosc + "00" + str;
+        } else {
+            wiadomosc = wiadomosc + "0" + str;
+        }*/
+        wiadomosc = wiadomosc + x;
+        wiadomosc=dodajSpacje(wiadomosc);
+     /*   for (int i = wiadomosc.length(); i < 125; i++) {
+            wiadomosc = wiadomosc + " ";
+        }*/
+        this.polaczenie.println(wiadomosc);
         this.polaczenie.close();
         nowyWatek.getWatek().interrupt();
         nowyWatek.getWatek().stop();
@@ -249,30 +316,33 @@ public class FXMLDocumentController implements Initializable {
     void handleWyslijWiadomosc(ActionEvent event) {
         try {
             String wiadomosc = "";
-            wiadomosc = wiadomosc + "6";
+          //  wiadomosc = wiadomosc + "6";
             String x = this.nickText.getText();
-            int dl = x.length();
+            wiadomosc=wiadomosc+dodajRozmiar(wiadomosc);
+          /*  int dl = x.length();
             String str = String.valueOf(dl);
             int dlstr = str.length();
             if (dlstr == 1) {
                 wiadomosc = wiadomosc + "00" + str;
             } else {
                 wiadomosc = wiadomosc + "0" + str;
-            }
+            }*/
             wiadomosc = wiadomosc + x;
-            this.obecnaGrupa.setText("klub");
+            //this.obecnaGrupa.setText("klub");
             String nazwaGrupy = this.obecnaGrupa.getText() + ".txt";
-            dl = nazwaGrupy.length();
+            wiadomosc=wiadomosc+dodajRozmiar(nazwaGrupy);
+           /* dl = nazwaGrupy.length();
             str = String.valueOf(dl);
             dlstr = str.length();
             if (dlstr == 1) {
                 wiadomosc = wiadomosc + "00" + str;
             } else {
                 wiadomosc = wiadomosc + "0" + str;
-            }
+            }*/
             wiadomosc = wiadomosc + nazwaGrupy;
-            dl = this.trescWiadomosci.getText().length();
-            str = String.valueOf(dl);
+            x = this.trescWiadomosci.getText();
+            wiadomosc=wiadomosc+dodajRozmiar(wiadomosc);
+            /*str = String.valueOf(dl);
             dlstr = str.length();
             if (dlstr == 1) {
                 wiadomosc = wiadomosc + "00" + str;
@@ -280,12 +350,13 @@ public class FXMLDocumentController implements Initializable {
                 wiadomosc = wiadomosc + "0" + str;
             } else if (dlstr == 3) {
                 wiadomosc = wiadomosc + str;
-            }
-            wiadomosc = wiadomosc + trescWiadomosci.getText();
-            int dlwiadomosci = wiadomosc.length();
+            }*/
+            wiadomosc = wiadomosc + x;
+            wiadomosc=dodajSpacje(wiadomosc);
+           /* int dlwiadomosci = wiadomosc.length();
             for (int i = dlwiadomosci; i < 125; i++) {
                 wiadomosc = wiadomosc + " ";
-            }
+            }*/
             System.out.println(wiadomosc);
             this.polaczenie.println(wiadomosc);
             System.out.println("wyslalam");
@@ -305,9 +376,10 @@ public class FXMLDocumentController implements Initializable {
         try {
             System.out.println("jestem");
             String wiadomosc = "3";
-            for (int i = 1; i < 125; i++) {
+            wiadomosc=dodajSpacje(wiadomosc);
+           /* for (int i = 1; i < 125; i++) {
                 wiadomosc = wiadomosc + " ";
-            }
+            }*/
             System.out.println(wiadomosc);
             this.polaczenie.println(wiadomosc);
 
@@ -325,9 +397,10 @@ public class FXMLDocumentController implements Initializable {
     void handleUtworzPokoj(ActionEvent event) {
         try {
             String wiadomosc = "2";
-            for (int i = 1; i < 125; i++) {
+            wiadomosc=dodajSpacje(wiadomosc);
+         /*   for (int i = 1; i < 125; i++) {
                 wiadomosc = wiadomosc + " ";
-            }
+            }*/
             System.out.println(wiadomosc);
             this.polaczenie.println(wiadomosc);
             this.nazwaPokoju.setVisible(true);
@@ -350,11 +423,12 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     void handleZaladujListeUzytkownikow(ActionEvent event) {
         try {
-            System.out.println("jestem");
+           // System.out.println("jestem");
             String wiadomosc = "2";
-            for (int i = 1; i < 125; i++) {
+            wiadomosc=dodajSpacje(wiadomosc);
+         /*   for (int i = 1; i < 125; i++) {
                 wiadomosc = wiadomosc + " ";
-            }
+            }*/
             System.out.println(wiadomosc);
             this.polaczenie.println(wiadomosc);
         } catch (Exception ex) {
@@ -369,30 +443,33 @@ public class FXMLDocumentController implements Initializable {
      */
     @FXML
     void handleZalogujSie(ActionEvent event) {
-        String wiadomosc = "";
+        
         try {
-            this.polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"), 1236);
-            wiadomosc = wiadomosc + "1";
-
-            int dl = nickText.getText().length();
+            String wiadomosc = "1";
+            this.polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"), 1237);
+           // wiadomosc = wiadomosc + "1";
+            String x=nickText.getText();
+            wiadomosc=wiadomosc+dodajRozmiar(x);
+          /*  int dl = nickText.getText().length();
             String str = String.valueOf(dl);
             int dlstr = str.length();
             if (dlstr == 1) {
                 wiadomosc = wiadomosc + "00" + str;
             } else {
                 wiadomosc = wiadomosc + "0" + str;
-            }
-            wiadomosc = wiadomosc + nickText.getText();
-            int dlwiadomosci = wiadomosc.length();
+            }*/
+            wiadomosc = wiadomosc + x;
+            wiadomosc=dodajSpacje(wiadomosc);
+           /* int dlwiadomosci = wiadomosc.length();
             for (int i = dlwiadomosci; i < 125; i++) {
                 wiadomosc = wiadomosc + " ";
-            }
+            }*/
             System.out.println(wiadomosc);
             this.polaczenie.println(wiadomosc);
             String odbior = this.polaczenie.readLine();
             if (odbior.equals("11")) {
                 informacje.setText("Udało się zalogować");
-                nowyWatek = new Watek(this.polaczenie, this.informacje, this.listaUzytkownikow, this.listaPokoi, this.nazwaPokoju, this.dodajDoPokoju, this.zatwierdz, this.pokoje, this.uzytkownicy,this.obecnaGrupa,this.oknoWiadomosci);
+                nowyWatek = new Watek(this.polaczenie, this.informacje, this.listaUzytkownikow, this.listaPokoi, this.nazwaPokoju, this.dodajDoPokoju, this.zatwierdz, this.pokoje, this.uzytkownicy, this.obecnaGrupa, this.oknoWiadomosci,this.trescWiadomosci);
                 Thread th = new Thread(nowyWatek);
                 th.start();
                 nowyWatek.setWatek(th);
