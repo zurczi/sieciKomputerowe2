@@ -32,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -41,9 +42,11 @@ import javafx.stage.WindowEvent;
  */
 public class FXMLDocumentController implements Initializable {
     private Polaczenie polaczenie;
-   // private Watek watek;
     private Grupa grupa;
     private Uzytkownik uzytkownik;
+    private Watek nowyWatek;
+    @FXML
+    private AnchorPane mainPane;
     @FXML
     private Label informacje;
     @FXML
@@ -83,8 +86,6 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label uzytkownicy;
     private Funkcje funkcje;
-   // Watek nowyWatek;
-    
     public String przygotujWiadomosc(String case1,String nickUzyt){
         String wiadomosc = "";
         String [] sklejanie= new String[125];
@@ -104,16 +105,13 @@ public class FXMLDocumentController implements Initializable {
                wiadomosc=sklejanie.toString();
         return wiadomosc;
     }
-    public String przygotujWiadomosc2(String case1){
-          String wiadomosc = case1;
-      //  String [] sklejanie= new String[125];
-               //sklejanie[0]=case1;
-               
-               for(int i=1;i<125;i++){
-                   wiadomosc=wiadomosc+" ";
+
+    public String dodajSpacje(String wiad,int odIlu){
+ 
+               for(int i=odIlu;i<125;i++){
+                   wiad=wiad+" ";
                }
-              // wiadomosc=sklejanie.toString();
-        return wiadomosc;
+        return wiad;
     }
     public FXMLDocumentController() throws UnknownHostException {
       ///  this.polaczenie=new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
@@ -125,6 +123,7 @@ public class FXMLDocumentController implements Initializable {
      */
     @FXML
     void handleDodajDoPokoju(ActionEvent event){
+        listaUzytkownikow.getItems().removeAll();
         listaUzytkownikow.getItems().add(listaPokoi.getSelectionModel().getSelectedItem());
         listaPokoi.getItems().remove(listaPokoi.getSelectionModel().getSelectedItem());
     }
@@ -251,17 +250,17 @@ public class FXMLDocumentController implements Initializable {
           //  nowyWatek.getWatek().interrupt();
            // nowyWatek.getWatek().stop();}
     }
+    /**
+     * CASE 6 WYSLIJ WIADOMOSC
+     * @param event 
+     */
     @FXML 
     void handleWyslijWiadomosc(ActionEvent event){
             try{
 
         String wiadomosc="";
-            wiadomosc=wiadomosc+"6";
-          
-            
-            
+            wiadomosc=wiadomosc+"6";     
             String x=this.nickText.getText();
-           
                int dl=x.length();
                String str=String.valueOf(dl);
                int dlstr=str.length();
@@ -391,12 +390,12 @@ public class FXMLDocumentController implements Initializable {
                }
                System.out.println(wiadomosc);
                this.polaczenie.println(wiadomosc); 
-               String uzyt = "";
+             /*  String uzyt = "";
                         uzyt=this.polaczenie.readLine();
                         String uzyt2=  uzyt.replace(" ","");
                         String [] uzyt3=uzyt2.split("\t");
                         List<String> uzyt4=Arrays.asList(uzyt3);
-                        listaUzytkownikow.setItems(FXCollections.observableArrayList(uzyt4));
+                        listaUzytkownikow.setItems(FXCollections.observableArrayList(uzyt4));*/
                 }
          catch (Exception ex) {
              polaczenie.close();
@@ -436,28 +435,22 @@ public class FXMLDocumentController implements Initializable {
                this.polaczenie.println(wiadomosc);
                System.out.println("wyslalam");
                String odbior=this.polaczenie.readLine();
-               if(odbior.equals("1")){
+               System.out.println("readline");
+               if(odbior.equals("11")){
                    informacje.setText("Udało się zalogować");
-               }else if(odbior.equals("2")){
+               }else if(odbior.equals("12")){
                    informacje.setText("Nie udało się zalogować. Nazwa jest zajęta");
                    this.polaczenie.close();
+               }else{
+                   informacje.setText("Nie rozpoznano");
                }
-              
-                  /*  nowyWatek=new Watek(this.polaczenie,this.oknoWiadomosci);
+              System.out.println("przed watkiem");
+                    nowyWatek=new Watek(this.polaczenie,this.informacje,this.listaUzytkownikow);
                     Thread th=new Thread(nowyWatek);
                     th.start();
-                    synchronized(th){
-                          try {
-                            System.out.println("Wait for list.");
-                             th.wait();
-                            }catch (InterruptedException e){
-                                System.out.println("Error in wait thread.");
-                                e.printStackTrace();
-                            }
-                    }
-                   // nowyWatek.setWatek(th);
-                }
-                }*/
+                    nowyWatek.setWatek(th);
+                System.out.println("po watkiem");
+                
            
             
         } catch (Exception ex) {
@@ -465,6 +458,10 @@ public class FXMLDocumentController implements Initializable {
     }}
       public Uzytkownik getUzytkownik() {
         return uzytkownik;
+    }
+
+    public Label getInformacje() {
+        return informacje;
     }
     
     public void setUzytkownik(Uzytkownik uzytkownik) {
