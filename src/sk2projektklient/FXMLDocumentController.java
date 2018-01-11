@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -65,13 +66,22 @@ public class FXMLDocumentController implements Initializable {
     private Button WylogujSie;
     @FXML
     private Button wybierzPokoj;
-   
+    @FXML
+    private TextField nazwaPokoju;
+    @FXML 
+    private Button dodajDoPokoju;
+    @FXML
+    private Button zatwierdz;
     @FXML
     private TextArea trescWiadomosci;
     @FXML
     private TextArea oknoWiadomosci;
     @FXML
     private Button przyciskWyslij;
+    @FXML 
+    private Label pokoje;
+    @FXML
+    private Label uzytkownicy;
     private Funkcje funkcje;
    // Watek nowyWatek;
     
@@ -111,6 +121,91 @@ public class FXMLDocumentController implements Initializable {
        // this.watek=new Watek();
     }
     /**
+     * DODAJ DO POKOJU CASE 5
+     */
+    @FXML
+    void handleDodajDoPokoju(ActionEvent event){
+        listaUzytkownikow.getItems().add(listaPokoi.getSelectionModel().getSelectedItem());
+        listaPokoi.getItems().remove(listaPokoi.getSelectionModel().getSelectedItem());
+    }
+    /**
+     * POTWIERDZ UTWORZENIE POKOJU CASE 5
+     * @param event 
+     */
+    @FXML
+    void handleZatwierdz(ActionEvent event){
+        try{
+         ObservableList lista=listaUzytkownikow.getItems();
+         String listaUzyt;
+         listaUzyt=lista.toString();
+         String replace = listaUzyt.replace("[","");
+         replace = replace.replace("]","");
+         replace = replace.replace(",","");
+         replace = replace.replace(" ", "\t");
+         replace=replace+"\n";
+         System.out.println(replace);
+        
+        String wiadomosc="";
+            wiadomosc=wiadomosc+"5";
+          String x=this.nazwaPokoju.getText()+".txt";
+           
+               int dl=x.length();
+               String str=String.valueOf(dl);
+               int dlstr=str.length();
+               if(dlstr==1){
+                 wiadomosc=wiadomosc+"00"+str;
+               }
+                 else{
+                  wiadomosc=wiadomosc+"0"+str;
+               }
+             wiadomosc=wiadomosc+x;
+             String nazwaAdmina=this.nickText.getText();
+             dl=nazwaAdmina.length();
+               str=String.valueOf(dl);
+               dlstr=str.length();
+               if(dlstr==1){
+                 wiadomosc=wiadomosc+"00"+str;
+               }
+                 else{
+                  wiadomosc=wiadomosc+"0"+str;
+               }
+             wiadomosc=wiadomosc+nazwaAdmina;
+             
+             
+               dl=replace.length();
+               str=String.valueOf(dl);
+               dlstr=str.length();
+               if(dlstr==1){
+                 wiadomosc=wiadomosc+"00"+str;
+               }
+                 else{
+                  wiadomosc=wiadomosc+"0"+str;
+               }
+             wiadomosc=wiadomosc+replace;
+             int dlwiadomosci=wiadomosc.length();
+               for(int i=dlwiadomosci;i<125;i++){
+                   wiadomosc=wiadomosc+" ";
+               }
+               System.out.println(wiadomosc);
+               this.polaczenie.println(wiadomosc);
+               System.out.println("wyslalam");
+               String odbior=this.polaczenie.readLine();
+                    if(odbior.equals("5")){
+                        this.informacje.setText("Utworzono nowa grupe");
+                        this.nazwaPokoju.setVisible(false);
+                        this.dodajDoPokoju.setVisible(false);
+                        this.zatwierdz.setVisible(false);
+                        this.pokoje.setText("Pokoje");
+                        this.pokoje.setText("Uzytkownicy");
+                    }else this.informacje.setText("Nie udało się utworzyc nowej grupy");
+        
+    }catch(Exception e){
+        this.polaczenie.close();
+    }}
+    /**
+     * 
+     */
+    /**
      * WYBOR POKOJU CASE 4
      * @param event 
      */
@@ -118,6 +213,7 @@ public class FXMLDocumentController implements Initializable {
     void handleWybierzPokoj(ActionEvent event){
         try{
             String wybrany=listaPokoi.getSelectionModel().selectedItemProperty().getValue().toString();
+            this.obecnaGrupa.setText(wybrany);
             String wiadomosc="";
             wiadomosc=wiadomosc+"4";
             wybrany=wybrany+".txt";
@@ -138,7 +234,7 @@ public class FXMLDocumentController implements Initializable {
                System.out.println(wiadomosc);
                this.polaczenie.println(wiadomosc);
                System.out.println("wyslalam");
-               String odbior=this.polaczenie.readLine();
+               //String odbior=this.polaczenie.readLine();
             //System.out.println(wybrany);
         }catch(Exception e){
             this.polaczenie.close();
@@ -157,42 +253,64 @@ public class FXMLDocumentController implements Initializable {
     }
     @FXML 
     void handleWyslijWiadomosc(ActionEvent event){
-     Polaczenie polaczenie = null;
-        try {
-                polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
-                polaczenie.println("6");
-               // System.out.println("\""+this.uzytkownik.getNick()+"\"");
-                String odbior=polaczenie.readLine(); 
-                System.out.println(odbior);
-                if (odbior.equals("11")) {
-                    System.out.println("jestem w if");
-                    System.out.println("\""+this.nickText.getText()+"\"");
-                    polaczenie.println("\""+this.nickText.getText()+"\"");
-                    System.out.println("czesc");
-                    odbior=polaczenie.readLine();
-                    
-                                    if(odbior.equals("12")){
-                                    System.out.println("odbior2");
-                                    polaczenie.println("\""+this.obecnaGrupa.getText()+".txt\"");
-                                    odbior=polaczenie.readLine();
-                                    
-                                    if(odbior.equals("13")){
-                                        System.out.println("odbior3");
-                                        this.oknoWiadomosci.appendText(this.nickText.getText()+" : "+this.trescWiadomosci.getText());
-                                        //this.polaczenie.println("\""+this.trescWiadomosci.getText()+"\"");
-                                        this.polaczenie.println("\""+"siema"+"\"");
-                                    }
-                                    
-                                }
-                                    
-                    this.trescWiadomosci.getText();
-                        }
-              polaczenie.close();
-                }
-         catch (Exception ex) {
-             polaczenie.close();
-        }   
-    }
+            try{
+
+        String wiadomosc="";
+            wiadomosc=wiadomosc+"6";
+          
+            
+            
+            String x=this.nickText.getText();
+           
+               int dl=x.length();
+               String str=String.valueOf(dl);
+               int dlstr=str.length();
+               if(dlstr==1){
+                 wiadomosc=wiadomosc+"00"+str;
+               }
+                 else{
+                  wiadomosc=wiadomosc+"0"+str;
+               }
+             wiadomosc=wiadomosc+x;
+             this.obecnaGrupa.setText("klub");
+             String nazwaGrupy=this.obecnaGrupa.getText()+".txt";
+             dl=nazwaGrupy.length();
+               str=String.valueOf(dl);
+               dlstr=str.length();
+               if(dlstr==1){
+                 wiadomosc=wiadomosc+"00"+str;
+               }
+                 else{
+                  wiadomosc=wiadomosc+"0"+str;
+               }
+             wiadomosc=wiadomosc+nazwaGrupy;
+             
+             
+               dl=this.trescWiadomosci.getText().length();
+               str=String.valueOf(dl);
+               dlstr=str.length();
+               if(dlstr==1){
+                 wiadomosc=wiadomosc+"00"+str;
+               }
+               else if(dlstr==2){
+                  wiadomosc=wiadomosc+"0"+str;
+               }
+               else if(dlstr==3){
+                  wiadomosc=wiadomosc+str;
+               }
+             wiadomosc=wiadomosc+trescWiadomosci.getText();
+             int dlwiadomosci=wiadomosc.length();
+               for(int i=dlwiadomosci;i<125;i++){
+                   wiadomosc=wiadomosc+" ";
+               }
+               System.out.println(wiadomosc);
+               this.polaczenie.println(wiadomosc);
+               System.out.println("wyslalam");
+            
+    }catch(Exception e){
+        this.polaczenie.close();
+    }}
+    
     
     /**
      * ODSWIEZ LISTE POKOI CASE 3
@@ -219,12 +337,35 @@ public class FXMLDocumentController implements Initializable {
         }
     } 
     /**
-     * Funkcja obsługująca klawisz "Utwórz pokój" - otwiera Grupy.fxml wewnętrzne okno
+     * Funkcja obsługująca klawisz "Utwórz pokój" 
      * @param event 
      */
     @FXML
     void handleUtworzPokoj(ActionEvent event) {
-            try{
+           try {
+               this.nazwaPokoju.setVisible(true);
+               this.dodajDoPokoju.setVisible(true);
+               this.zatwierdz.setVisible(true);
+               this.pokoje.setText("Uzytkownicy do dodania");
+               this.pokoje.setText("Uzytkownicy dodani");
+               String wiadomosc = "2";
+               for(int i=1;i<125;i++){
+                   wiadomosc=wiadomosc+" ";
+               }
+               this.polaczenie.println(wiadomosc); 
+               String uzyt=this.polaczenie.readLine();
+                String uzyt2=  uzyt.replace(" ","");
+                String [] uzyt3=uzyt2.split("\t");
+                List<String> uzyt4=Arrays.asList(uzyt3);
+                listaPokoi.setItems(FXCollections.observableArrayList(uzyt4));
+           }catch(Exception e){
+                this.polaczenie.close();
+                }
+        //TODO Pokazywanie sie i znikanie przyciskow
+        
+        
+        
+           /* try{
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Grupy.fxml"));
             Parent root1=(Parent) fxmlLoader.load();
             Stage stage=new Stage();
@@ -233,7 +374,7 @@ public class FXMLDocumentController implements Initializable {
             stage.show();
         }catch (Exception e){
             System.out.println("Nie można załadować okna");
-        }
+        }*/
     }
     /**
      * ODSWIEZ LISTE KLIENTOW CASE 2
@@ -245,24 +386,17 @@ public class FXMLDocumentController implements Initializable {
         try {
             System.out.println("jestem");
                String wiadomosc = "2";
-
                for(int i=1;i<125;i++){
                    wiadomosc=wiadomosc+" ";
                }
-             // String wiad=przygotujWiadomosc2("2");
-               // polaczenie.println("2");
                System.out.println(wiadomosc);
-               this.polaczenie.println(wiadomosc);
-               // String odbior=this.polaczenie.readLine();
-               
-                    String uzyt = "";
+               this.polaczenie.println(wiadomosc); 
+               String uzyt = "";
                         uzyt=this.polaczenie.readLine();
                         String uzyt2=  uzyt.replace(" ","");
                         String [] uzyt3=uzyt2.split("\t");
                         List<String> uzyt4=Arrays.asList(uzyt3);
                         listaUzytkownikow.setItems(FXCollections.observableArrayList(uzyt4));
-                        
-        
                 }
          catch (Exception ex) {
              polaczenie.close();
@@ -338,35 +472,12 @@ public class FXMLDocumentController implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //this.uzytkownik=new Uzytkownik("");
-      /*  listaPokoi.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                //System.out.println(newValue);
-                obecnaGrupa.setText(newValue);
-                //System.out.println(newValue);
-                Polaczenie polaczenie = null;
-        try {
-              polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"),1234);
-               polaczenie.println("4");
-               String odbior=polaczenie.readLine();
-                if (odbior.equals("11")) {
-                    polaczenie.println("\""+newValue+".txt\"");
-                    String uzytPok = "";
-                        uzytPok=polaczenie.readLine();
-                        String uzytPok2=  uzytPok.replace(" ","");
-                        String [] uzytPok3=uzytPok2.split("\t");
-                        List<String> uzytPok4=Arrays.asList(uzytPok3);
-                        System.out.println(uzytPok4);
-                        listaUzytkownikow.setItems(FXCollections.observableArrayList(uzytPok4));
-                        }
-              //  System.out.println("zaraz wylacze");
-              polaczenie.close();}
-         catch (Exception ex) {
-             polaczenie.close();
-        }    
-            }
-        });*/
+       this.polaczenie=null;
+               this.nazwaPokoju.setVisible(false);
+               this.dodajDoPokoju.setVisible(false);
+               this.zatwierdz.setVisible(false);
+             //  this.pokoje.setText("Uzytkownicy do dodania");
+              // this.pokoje.setText("Uzytkownicy dodani");
     }    
     
 }
