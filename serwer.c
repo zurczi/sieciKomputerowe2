@@ -28,8 +28,11 @@ struct cln {
     struct sockaddr_in caddr;
 };
 
+
+
 typedef struct uzytkownik{
     char nick[15];
+    int nfd;
 }uzytkownik;
 
 typedef struct pokoj{
@@ -71,11 +74,12 @@ char* pobierzDane(int rozmiar, char *buffor,int poczatek){
 
 void wyslijZawartoscPliku(char *nazwaPliku ,struct cln* b,int ktoryCase){
      
-    char tablicaDoWyslania[321];
-    tablicaDoWyslania[0]=ktoryCase;            
+    char tablicaDoWyslania[322];
+    tablicaDoWyslania[0]=ktoryCase+'0';
+    tablicaDoWyslania[1]='\t';
     FILE *plik=fopen(nazwaPliku,"rw");
                 
-    int i=1; //ilosc znakow w pliku
+    int i=2; //ilosc znakow w pliku
     int znak;
     
     do{
@@ -100,6 +104,8 @@ void* cthread (void* arg) {
     
     struct cln* c = (struct cln*)arg;
     uzytkownik *tabUzytkownikow = malloc(20*sizeof(uzytkownik));
+    
+    
     printf("\nPolaczylem sie z:%s.\n", inet_ntoa((struct in_addr)c->caddr.sin_addr));
     int i,j;
     char pomCHAR;
@@ -127,7 +133,7 @@ void* cthread (void* arg) {
             //                                                      L O G O W A N I E
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 1:{
-                printf("\nCASE 1");
+                printf("\n\n\nCASE 1");
                 
                 int rozmiarNicka=zamienNaLiczbe(1,buffor);
                 
@@ -147,6 +153,7 @@ void* cthread (void* arg) {
                     znak=getc(plik);
                     if(znak!=9){ //\t =
                         tabUzytkownikow[i].nick[j]=znak;
+                        tabUzytkownikow[i].nfd=c->cfd;
                         j++;
                     }
                     else{
@@ -175,12 +182,12 @@ void* cthread (void* arg) {
                     write(plik3,nick,rozmiarNicka);
                     write(plik3,"\t",1);
                     printf("\nZapisalem do pliku");
-                    write(c->cfd,nazwaWolna,2);
+                    write(c->cfd,nazwaWolna,3);
                 }
                 else{
                     printf("\nNazwa uzytkownika zajeta");
                     //TODO jezeli nie ma tkiego w pliku to go wpisuje, jak jest to loguje, chyba ze jest w tab zalogowanychto wywalam
-                    write(c->cfd,nazwaZajeta,2);
+                    write(c->cfd,nazwaZajeta,3);
                 }
                 
                 //pomocnicze wyswietlenie tablicy uzytkownikow
@@ -202,7 +209,7 @@ void* cthread (void* arg) {
             //                           W Y S Y L A N I E      L I S T Y     Z A L O G O W A N Y C H     U Z Y T K O W N I K O W 
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 2:{
-                printf("\nCASE 2");
+                printf("\n\n\nCASE 2");
                 wyslijZawartoscPliku("uzytkownicy.txt",c,2);
                 printf("\nZakonczylem case 2");
                 break;
@@ -214,7 +221,7 @@ void* cthread (void* arg) {
             //                                      W Y S Y L A N I E      L I S T Y    P O K O I
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 3:{
-                printf("\nCASE 3");
+                printf("\n\n\nCASE 3");
                 wyslijZawartoscPliku("pokoje.txt",c,3);
                 printf("\nZakonczylem case 2");
                 break;
@@ -227,7 +234,7 @@ void* cthread (void* arg) {
             //                    W Y S Y L A N I E      L I S T Y    U Z Y T K O W N I K O W      W      D A N Y M     P O  K O J U  
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 4:{
-                printf("\nCASE 4");
+                printf("\n\n\nCASE 4");
                 int rozmiarPokoju=zamienNaLiczbe(1,buffor);
                 
                 char * nazwaPokoju = malloc (sizeof (char) * rozmiarPokoju);
@@ -248,7 +255,7 @@ void* cthread (void* arg) {
             //                                                  N O W A     G R U P A
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 5:{
-                printf("\nCASE 5");
+                printf("\n\n\nCASE 5");
                 
                 int rozmiar=zamienNaLiczbe(1,buffor);
                 
@@ -297,7 +304,7 @@ void* cthread (void* arg) {
                 
                 //wysylanie potwierdzenia utworzenia
                 char potwierdzenie[3]="51\n";
-                write(c->cfd,potwierdzenie,2);
+                write(c->cfd,potwierdzenie,3);
                               
                 printf("\nZakonczylem case 5");
                 close(nowyPlik);
@@ -311,7 +318,7 @@ void* cthread (void* arg) {
             //                               W Y S Y L A N I E      W I A D O M O S C I     D O     P O K O J U
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 6:{
-                printf("\nCASE 6");
+                printf("\n\n\nCASE 6");
                 
                 //odczyt nicku nadawcy
                 int rozmiarNickuNadawcy=zamienNaLiczbe(1,buffor);
@@ -349,20 +356,71 @@ void* cthread (void* arg) {
                 
                 printf("\nTresc wiadomosci to:%s.",wiadomosc);
                   
+                //odczytywanie z pliku nickow osob znajdujacych sie w pokoju
+                FILE *plik=fopen(nazwaPokoju,"rw");
+                uzytkownik *tabUzytkownikowwPokoju = malloc(20*sizeof(uzytkownik));
                 
-                //utworzenie i zapis do pliku
-                int nowyPlik=open(nickNadawcy,O_WRONLY|O_APPEND);
-                write(nowyPlik,nazwaPokoju,rozmiarPokoju);
-                write(nowyPlik,"\t",1);
-                write(nowyPlik,wiadomosc,rozmiarWiadomosci);
+                int znak;
+                i=0;
+                j=0;
+                do{
+                    znak=getc(plik);
+                    if(znak!=9){ //\t =
+                        tabUzytkownikowwPokoju[i].nick[j]=znak;
+                        j++;
+                    }
+                    else{
+                        i++;
+                        j=0;
+                    }
+                }
+                while(znak!=EOF);
+                fclose(plik);
                 
+                //przygotowanie wiadomosci do tablicaDoWyslania
+                char * gotowaWiadomosc = malloc (sizeof (char) * (1+1+rozmiarNickuNadawcy+1+rozmiarPokoju+1+rozmiarWiadomosci+1));
+                int skip = 0;
+                gotowaWiadomosc[0]='6';
+                gotowaWiadomosc[1]='\t';
+                skip += 2;
+                for(i=0;i<rozmiarNickuNadawcy;i++){
+                    gotowaWiadomosc[skip+i]=nickNadawcy[i];
+                }
+                skip +=rozmiarNickuNadawcy;
+                gotowaWiadomosc[skip]='\t';
+                skip+=1;
                 
-                //wysylanie potwierdzenia utworzenia
-                char potwierdzenie[2]="5\n";
-                write(c->cfd,potwierdzenie,2);
+                for(i=0;i<rozmiarPokoju;i++){
+                    gotowaWiadomosc[skip+i]=nazwaPokoju[i];
+                }
+                skip +=rozmiarPokoju;
+                gotowaWiadomosc[skip]='\t';
+                skip+=1;
+                
+                for(i=0;i<rozmiarWiadomosci;i++){
+                    gotowaWiadomosc[skip+i]=wiadomosc[i];
+                }
+                skip +=rozmiarWiadomosci;
+                gotowaWiadomosc[skip]='\n';
+                skip+=1;
+                     
+                printf("\nWiadomosc:%s.",gotowaWiadomosc);
+                
+                // uzytkownicy z pokoju
+                for(i=0;i<20;i++){
+                    if(strcmp(tabUzytkownikowwPokoju[i].nick,nickNadawcy)!=0){
+                        for(j=0;j<20;j++){
+                            if(strcmp(tabUzytkownikow[j].nick,tabUzytkownikowwPokoju[i].nick)==0){
+                                write(tabUzytkownikow[j].nfd,gotowaWiadomosc,skip);
+                            }
+                        }
+                    }
+                }
+                //wysylanie potwierdzenia utworzeniatabUzytkownikow
+                //char potwierdzenie[2]="6\n";
+                //write(c->cfd,potwierdzenie,2);
                 
                 printf("\nZakonczylem case 6");
-                close(nowyPlik);
                 break;
             }
         
@@ -370,7 +428,7 @@ void* cthread (void* arg) {
             //                                                     W Y L O G O W A N I E
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 7:{
-                printf("\nCASE 7");
+                printf("\n\n\nCASE 7");
                 
                 int rozmiarNicka7=zamienNaLiczbe(1,buffor);
                 //char nick7[rozmiarNicka7];
@@ -394,7 +452,7 @@ void* cthread (void* arg) {
             //case 8:
             
                 default : {
-                printf("Nie znaleziono polcenia\n");
+                printf("\n\nNie znaleziono polcenia\n");
                 break;
             }
         }

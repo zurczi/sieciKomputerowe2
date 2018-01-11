@@ -1,1 +1,1 @@
-uzytkowniy	praca	znajomi	rodzina	studia	klub
+uzytkownicy	praca	znajomi	rodzina	studia	klub
