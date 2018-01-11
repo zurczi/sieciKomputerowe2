@@ -466,7 +466,7 @@ void* cthread (void* arg) {
                             if(strncmp(tabUzytkownikow[j].nick,tabUzytkownikowwPokoju[i].nick,15)==0 && tabUzytkownikow[j].nick[0]!=0){
                                 printf("\n .%d. .%s. \n",tabUzytkownikow[j].nfd,tabUzytkownikow[j].nick);
                                 write(tabUzytkownikow[j].nfd,gotowaWiadomosc,skip);
-                                printf("CFD GLOWNEGO:%d.",c->cfd);
+                                //printf("CFD GLOWNEGO:%d");
                                 //write(c->cfd,"6\t2\n",4);
                                 //printf("\nWyslalem wiadomosc do:%s.",tabUzytkownikow[j].nick);
                             }
@@ -488,36 +488,57 @@ void* cthread (void* arg) {
             //                                                     W Y L O G O W A N I E
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 7:{
-                printf("\n\n\nCASE 7");
+                int rozmiarNicka=zamienNaLiczbe(1,buffor);
                 
-                int rozmiarNicka7=zamienNaLiczbe(1,buffor);
-                //char nick7[rozmiarNicka7];
+                char * nick = malloc (sizeof (char) * rozmiarNicka);
+                nick = pobierzDane(rozmiarNicka,buffor,4);
+                printf("\nnick do usuniecia to:%s.",nick);
                 
-                char * nick7 = malloc (sizeof (char) * rozmiarNicka7);
-                nick7 = pobierzDane(rozmiarNicka7,buffor,4);
-                
-                //strncpy(nick7,pobierzDane(rozmiarNicka7,buffor,4),rozmiarNicka7);
-                printf("\nNick to:%s.",nick7);
-                
-                //TODO usuwanie z tablicy zalogowanych
-                
-                close(c->cfd);
-                free(c);
-                break;
+                for(i=0;i<20;i++){
+                    if(strncmp(tabUzytkownikow[i].nick,nick,15)==0 && tabUzytkownikow[i].nick[0]!=0){
+                        tabUzytkownikow[i].nfd=0;
+                        for(j=0;j<15;j++){
+                            tabUzytkownikow[i].nick[j]='\0';
+                        }
+                        
+                    }
+                }
+               close(c->cfd);
+               goto EndWhile;
+               printf("\nWYLOGOWALEM");
+               break;
             }
             
             //------------------------------------------------------------------------------------------------------------------------------------------------
             //                                                       E D Y C J A    G R U P Y
             //------------------------------------------------------------------------------------------------------------------------------------------------
-            //case 8:
+            case 8:{
+                int rozmiarNazwy=zamienNaLiczbe(1,buffor);
+                char * nazwa = malloc (sizeof (char) * rozmiarNazwy);
+                nazwa = pobierzDane(rozmiarNazwy,buffor,4);
+                printf("\nNazwa pokoju do usuniecia to:%s.\n",nazwa);
+                
+                
+                //odczyt nicku admina
+                int polozenieRozmiaru=4+rozmiarNazwy;
+                int rozmiarUzytkownika=zamienNaLiczbe(polozenieRozmiaru,buffor);
+                
+             
+                int skadOdczytywac=polozenieRozmiaru+3;
+                char * nickUzytkownika = malloc (sizeof (char) * rozmiarUzytkownika);
+                nickUzytkownika = pobierzDane(rozmiarUzytkownika,buffor,skadOdczytywac);
+                printf("\nNick uzytkownika:%s.",nickUzytkownika);
+                
+            }
             
-                default : {
+            default : {
                 printf("\n\nNie znaleziono polcenia\n");
+                goto EndWhile;
                 break;
             }
         }
     }
-
+EndWhile: ;
 
     //sleep(3);
    // write(c->cfd, odp, strlen(odp));
@@ -536,7 +557,7 @@ int main()
     
     pthread_t tid;
     
-    uint16_t port = 1236;
+    uint16_t port = 1237;
     //char ip[30] = "192.168.0.15";//INADDR_ANY;
     //strcpy(ip,INADDR_ANY);
     addr.sin_family = PF_INET;
