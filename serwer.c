@@ -49,6 +49,25 @@ int zamienNaLiczbe(int poczatekLiczby, char *buffor){
     return liczba;
 }
 
+char* pobierzDane(int rozmiar, char *buffor){
+            
+    char *dane = malloc (sizeof (char) * rozmiar);
+    memset(dane,0,sizeof(dane));
+    printf("\nRozmiar danych:%d.",rozmiar);
+    //odczytywanie nazwy
+    int n=0;
+    int i;
+    int fordo=4+rozmiar;
+    memset(dane,0,sizeof(dane));
+    for(i=4;i<fordo;i++){
+        dane[n]=buffor[i];
+        n++;
+    }
+    printf("\nDane to:%s.\n",dane);
+    
+    return dane;
+}
+
 
 void wyslijZawartoscPliku(char *nazwaPliku ,struct cln* b){
      
@@ -91,7 +110,7 @@ void* cthread (void* arg) {
     
     
     while(1){
-       
+        memset(buffor,0,sizeof(buffor));
         i=0;
         do{
             pom=read(c->cfd,&pomCHAR,1);
@@ -112,6 +131,7 @@ void* cthread (void* arg) {
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 1:{
                 printf("\nCASE 1");
+                
                 int rozmiarNicka=zamienNaLiczbe(1,buffor);
                 
                 char nick[rozmiarNicka];
@@ -126,6 +146,10 @@ void* cthread (void* arg) {
                     n++;
                 }
                 printf("\nNick to:%s.",nick);
+                
+                //char nick[rozmiarNicka];
+                //strncpy(pobierzDane(rozmiarNicka,buffor),nick,rozmiarNicka);
+                //printf("\nNick to:%s.",nick);
                 
                 //odczytywanie obecnych uzytkownikow z pliku
                 plik=fopen("uzytkownicy.txt","rw");
@@ -170,6 +194,7 @@ void* cthread (void* arg) {
                 }
                 else{
                     printf("\nNazwa uzytkownika zajeta");
+                    //TODO jezeli nie ma tkiego w pliku to go wpisuje, jak jest to loguje, chyba ze jest w tab zalogowanychto wywalam
                     write(c->cfd,nazwaZajeta,2);
                 }
                 
@@ -224,14 +249,13 @@ void* cthread (void* arg) {
                 printf("\nRomiar pokoju:%d.",rozmiarPokoju);
                 //odczytywanie nazwy
                 n=0;
-                int fordo=4+rozmiarPokoju;
-                
-                for(i=4;i<fordo;i++){
+                int fordo4=4+rozmiarPokoju;
+                memset(nazwaPokoju,0,sizeof(nazwaPokoju));
+                for(i=4;i<fordo4;i++){
                     nazwaPokoju[n]=buffor[i];
                     n++;
                 }
-                printf("\nNazwa to:%s.",nazwaPokoju);
-                
+                printf("\nNazwa to:%s.\n",nazwaPokoju);
                 
                 wyslijZawartoscPliku(nazwaPokoju,c);
                 
@@ -241,20 +265,154 @@ void* cthread (void* arg) {
             }
                 
                 
-                 /* 
+                 
             //------------------------------------------------------------------------------------------------------------------------------------------------
             //                                                  N O W A     G R U P A
             //------------------------------------------------------------------------------------------------------------------------------------------------
-            //case 5:
+            case 5:{
+                printf("\nCASE 5");
+                
+                int rozmiar=zamienNaLiczbe(1,buffor);
+                
+                char nazwa[rozmiar];
+                memset(nazwa,0,sizeof(nazwa));
+                printf("\nRomiar pokoju:%d.",rozmiar);
+                //odczytywanie nazwy
+                n=0;
+                int fordo4=4+rozmiar;
+                memset(nazwa,0,sizeof(nazwa));
+                for(i=4;i<fordo4;i++){
+                    nazwa[n]=buffor[i];
+                    n++;
+                }
+                printf("\nNazwa to:%s.\n",nazwa);
+                
+                
+                //odczyt nicku admina
+                int rozmiarAdmina=zamienNaLiczbe(fordo4,buffor);
+                
+                char nickAdmina[rozmiarAdmina];
+                memset(nickAdmina,0,sizeof(nazwa));
+                
+                n=0;
+                int fordo42=fordo4+rozmiarAdmina+3;
+                int x=fordo4+3;
+                for(i=x;i<fordo42;i++){
+                    nickAdmina[n]=buffor[i];
+                    n++;
+                }
+                printf("\nNick admina to:%s.",nickAdmina);
+                
+                
+                //odczyt listy uzytkownikow
+                int rozmiarListy=zamienNaLiczbe(fordo42,buffor);
+                
+                char lista[rozmiarListy];
+                memset(lista,0,sizeof(lista));
+                
+                n=0;
+                int fordo43=fordo42+rozmiarListy+3;
+                x=fordo42+3;
+                for(i=x;i<fordo43;i++){
+                    lista[n]=buffor[i];
+                    n++;
+                }
+                printf("\nLista uzytkownikow to:%s.",lista);
+                
+                
+                
+                //utworzenie i zapis do pliku
+                int nowyPlik=open(nazwa,O_WRONLY|O_APPEND);
+                write(nowyPlik,nickAdmina,rozmiarAdmina);
+                write(nowyPlik,"\t",1);
+                write(nowyPlik,lista,rozmiarListy);
+                
+                //wysylanie potwierdzenia utworzenia
+                char potwierdzenie[2]="5\n";
+                write(c->cfd,potwierdzenie,2);
+                              
+                printf("\nZakonczylem case 5");
+                close(nowyPlik);
+                break;
+                
+            }
+            
                 
                 
             //------------------------------------------------------------------------------------------------------------------------------------------------
-            //                               W Y S Y L A N I E      W I AD O M O S C I     D O     P O K O J U
+            //                               W Y S Y L A N I E      W I A D O M O S C I     D O     P O K O J U
             //------------------------------------------------------------------------------------------------------------------------------------------------
-            //case 6:
+            case 6:{
+                printf("\nCASE 6");
+                
+                int rozmiarNickuNadawcy=zamienNaLiczbe(1,buffor);
+                
+                char nickNadawcy[rozmiarNickuNadawcy];
+                memset(nickNadawcy,0,sizeof(nickNadawcy));
+                printf("\nRomiar nicku nadawcy:%d.",rozmiarNickuNadawcy);
+                //odczytywanie nazwy
+                n=0;
+                int fordo4=4+rozmiarNickuNadawcy;
+                memset(nickNadawcy,0,sizeof(nickNadawcy));
+                for(i=4;i<fordo4;i++){
+                    nickNadawcy[n]=buffor[i];
+                    n++;
+                }
+                printf("\nNick nadawcy to:%s.\n",nickNadawcy);
+                
+                
+                //odczyt nazwy pokoju
+                int rozmiarPokoju=zamienNaLiczbe(fordo4,buffor);
+                
+                char nazwaPokoju[rozmiarPokoju];
+                memset(nazwaPokoju,0,sizeof(nickNadawcy));
+                
+                n=0;
+                int fordo42=fordo4+rozmiarPokoju+3;
+                int x=fordo4+3;
+                for(i=x;i<fordo42;i++){
+                    nazwaPokoju[n]=buffor[i];
+                    n++;
+                }
+                printf("\nNick admina to:%s.",nazwaPokoju);
+                
+                
+                //odczyt listy uzytkownikow
+                int rozmiarListy=zamienNaLiczbe(fordo42,buffor);
+                
+                char lista[rozmiarListy];
+                memset(lista,0,sizeof(lista));
+                
+                n=0;
+                int fordo43=fordo42+rozmiarListy+3;
+                x=fordo42+3;
+                for(i=x;i<fordo43;i++){
+                    lista[n]=buffor[i];
+                    n++;
+                }
+                printf("\nLista uzytkownikow to:%s.",lista);
+                
+                
+                
+                //utworzenie i zapis do pliku
+                int nowyPlik=open(nickNadawcy,O_WRONLY|O_APPEND);
+                write(nowyPlik,nazwaPokoju,rozmiarPokoju);
+                write(nowyPlik,"\t",1);
+                write(nowyPlik,lista,rozmiarListy);
+                
+                //wysylanie potwierdzenia utworzenia
+                char potwierdzenie[2]="5\n";
+                write(c->cfd,potwierdzenie,2);
+                
+                
+                
+                
+                printf("\nZakonczylem case 6");
+                close(nowyPlik);
+                break;
          
-            */
-        
+            
+            }
         
             //------------------------------------------------------------------------------------------------------------------------------------------------
             //                                                     W Y L O G O W A N I E
@@ -280,6 +438,11 @@ void* cthread (void* arg) {
                 free(c);
                 break;
             }
+            
+             //------------------------------------------------------------------------------------------------------------------------------------------------
+            //                                                       E D Y C J A    G R U P Y
+            //------------------------------------------------------------------------------------------------------------------------------------------------
+            //case 8:
        
         }
     
