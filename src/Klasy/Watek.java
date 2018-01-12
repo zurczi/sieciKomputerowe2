@@ -48,7 +48,8 @@ public class Watek extends Thread {
     private TextArea oknoWiadomosci;
     @FXML
     private TextArea trescWiadomosci;
-    public Watek(Polaczenie polaczenie, Label informacje, ListView listaUzyt, ListView listaPokoi, TextField nazwaPokoju, Button dodajDoPokoju, Button zatwierdz, Label pokoje, Label uzytkownicy, Label obecnaGrupa, TextArea oknoWiadomosci,TextArea trescWiadomosci) {
+
+    public Watek(Polaczenie polaczenie, Label informacje, ListView listaUzyt, ListView listaPokoi, TextField nazwaPokoju, Button dodajDoPokoju, Button zatwierdz, Label pokoje, Label uzytkownicy, Label obecnaGrupa, TextArea oknoWiadomosci, TextArea trescWiadomosci) {
         this.polaczenie = polaczenie;
         this.informacje = informacje;
         this.listaUzytkownikow = listaUzyt;
@@ -60,7 +61,7 @@ public class Watek extends Thread {
         this.uzytkownicy = uzytkownicy;
         this.obecnaGrupa = obecnaGrupa;
         this.oknoWiadomosci = oknoWiadomosci;
-        this.trescWiadomosci=trescWiadomosci;
+        this.trescWiadomosci = trescWiadomosci;
     }
 
     @Override
@@ -74,7 +75,10 @@ public class Watek extends Thread {
                 String[] wybor = wiadomosc.split("\t");
                 String x = wybor[0];
                 int y = Integer.parseInt(x);
-                System.out.println("To jest wybor: " + y);
+                for (int i = 0; i < wybor.length; i++) {
+                    System.out.println("To jest wybor :" + i + " " + wybor[i].toString());
+                }
+                System.out.println("To jest wybor switch: " + y);
                 switch (y) {
                     case 2:
                         ArrayList<String> uzytkownicy = new ArrayList<>(Arrays.asList(wybor));
@@ -99,7 +103,8 @@ public class Watek extends Thread {
                         break;
                     case 5:
                         System.out.println("dobry");
-                        if (wiadomosc.equals("5\t1")) {
+                        x = wybor[1];
+                        if (x.equals("1")) {
                             System.out.println("spoko");
                             Platform.runLater(() -> {
                                 this.informacje.setText("Utworzono nowa grupe");
@@ -108,14 +113,16 @@ public class Watek extends Thread {
                                 this.zatwierdz.setVisible(false);
                                 this.pokoje.setText("Pokoje");
                                 this.uzytkownicy.setText("Uzytkownicy");
+                                this.listaPokoi.getItems().removeAll();
+                                this.listaUzytkownikow.getItems().removeAll();
                             });
                         }
-
-                        Platform.runLater(() -> {
-                            if (!wybor.equals("51")) {
+                        x = wybor[1];
+                        if (!x.equals("1")) {
+                            Platform.runLater(() -> {
                                 this.informacje.setText("Nie udało się utworzyc nowej grupy");
-                            }
-                        });
+                            });
+                        }
 
                         break;
 
@@ -123,8 +130,8 @@ public class Watek extends Thread {
                         if (wiadomosc.equals("6\t1")) {
                             System.out.println("Ja wyslalem");
                             Platform.runLater(() -> {
-                                this.oknoWiadomosci.appendText("Ja: "+this.trescWiadomosci);
-                              //  this.informacje.setText("Udało się wsyłać");
+                                this.oknoWiadomosci.appendText("Ja: " + this.trescWiadomosci);
+                                //  this.informacje.setText("Udało się wsyłać");
                             });
 
                         } else {
@@ -140,13 +147,22 @@ public class Watek extends Thread {
                         }
                         break;
                     case 8:
-                        Platform.runLater(() -> {
-                            if (wiadomosc.equals("8\t1")) {
+                        x = wybor[1];
+                        if (x.equals("1")) {
+                            Platform.runLater(() -> {
+                                //this.listaPokoi.getItems().removeAll();
+                                //this.listaUzytkownikow.getItems().removeAll();
                                 this.informacje.setText("Pokój został usunięty");
-                            } else if (wiadomosc.equals("8\t2")) {
+                            });
+
+                        } else if (x.equals("2")) {
+                            Platform.runLater(() -> {
+                                //this.listaPokoi.getItems().removeAll();
+                                //this.listaUzytkownikow.getItems().removeAll();
                                 this.informacje.setText("Nie jesteś adminem");
-                            }
-                        });
+                            });
+                        }
+
                         break;
                     default:
                         Platform.runLater(() -> {
@@ -165,6 +181,7 @@ public class Watek extends Thread {
             }
         }
     }
+
     public Thread getWatek() {
         return watek;
     }
