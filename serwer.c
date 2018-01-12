@@ -237,6 +237,7 @@ void* cthread (void* arg) {
                     printf("\nUzytkownik o podanej nazwie jest juz zalogowany");
                     write(c->cfd,juzZalogowany,3);
                     close(c->cfd);
+                    goto EndWhile;
                 }
                 
                 //pomocnicze wyswietlenie tablicy uzytkownikow
@@ -385,8 +386,7 @@ void* cthread (void* arg) {
                 //odczyt nazwy pokoju
                 int x=4+rozmiarNickuNadawcy;
                 int rozmiarPokoju=zamienNaLiczbe(x,buffor);
-                
-                //char nazwaPokoju[rozmiarPokoju];
+      
                 
                 int pom=4+rozmiarNickuNadawcy+3;
                 //strncpy(nazwaPokoju,pobierzDane(rozmiarPokoju,buffor,pom),rozmiarPokoju);
@@ -395,28 +395,32 @@ void* cthread (void* arg) {
                
             //    printf("\nNazwa Pokojuto:%s.",nazwaPokoju);
                 
-                
+                 pom=4+rozmiarPokoju+3+rozmiarNickuNadawcy;
                 //odczyt tresci wiadomosci
                 int rozmiarWiadomosci=zamienNaLiczbe(pom,buffor);
                 //char wiadomosc[rozmiarWiadomosci];
                 
-                pom=pom+rozmiarPokoju+3;
+                pom=pom+3;
                 //strncpy(nazwaPokoju,pobierzDane(rozmiarPokoju,buffor,pom),rozmiarPokoju);
                 char * wiadomosc = malloc (sizeof (char) * rozmiarWiadomosci);
-                wiadomosc = pobierzDane(rozmiarPokoju,buffor,pom);
+                printf("\nRozmiar wiadomosci:%d.\n",rozmiarWiadomosci);
+                wiadomosc = pobierzDane(rozmiarWiadomosci,buffor,pom);
                 
                // printf("\nTresc wiadomosci to:%s.\n",wiadomosc);
                   
                 //odczytywanie z pliku nickow osob znajdujacych sie w pokoju
                 FILE *plik=fopen(nazwaPokoju,"rw");
                 uzytkownik *tabUzytkownikowwPokoju = malloc(20*sizeof(uzytkownik));
+                memset(tabUzytkownikowwPokoju,0,20*sizeof(uzytkownik));
                 
                 int znak;
                 i=0;
                 j=0;
                 do{
                     znak=getc(plik);
-                    if(znak!=9){ //\t =
+                    //printf("To jest znak : %d",znak);
+                     if(znak<0) break;
+                    if(znak!=9 && znak!=13 && znak!=10){ //\t =
                         tabUzytkownikowwPokoju[i].nick[j]=znak;
                         j++;
                     }
@@ -425,7 +429,7 @@ void* cthread (void* arg) {
                         j=0;
                     }
                 }
-                while(znak!=EOF);
+                while(znak!=EOF && znak>0);
                 fclose(plik);
                 
                 //przygotowanie wiadomosci do tablicaDoWyslania
@@ -455,32 +459,36 @@ void* cthread (void* arg) {
                 gotowaWiadomosc[skip]='\n';
                 skip+=1;
                 gotowaWiadomosc[skip]='\0';
-                skip+=1;
+              //  skip+=1;
                      
-              //  printf("\nWiadomosc:%s.\n",gotowaWiadomosc);
-               // printf("\nLAMBADA\n");
-                // uzytkownicy z pokoju
+               printf("\nWiadomosc:%s.\n",gotowaWiadomosc);
+                
+                //int ileWyslac=sizeof (char) * (1+1+rozmiarNickuNadawcy+1+rozmiarPokoju+1+rozmiarWiadomosci+1+1);
+                
                 for(i=0;i<20;i++){
                     if(strcmp(tabUzytkownikowwPokoju[i].nick,nickNadawcy)!=0){
+                      //  printf("\nJESTEM TUUU\n");
+                        printf("\nNICK TAB NADAWCY:%s. NICK:%s.\n",tabUzytkownikowwPokoju[i].nick,nickNadawcy);
                         for(j=0;j<20;j++){
-                            if(strncmp(tabUzytkownikow[j].nick,tabUzytkownikowwPokoju[i].nick,15)==0 && tabUzytkownikow[j].nick[0]!=0){
+                            if(strncmp(tabUzytkownikow[j].nick,tabUzytkownikowwPokoju[i].nick,15)==0 && tabUzytkownikow[j].nfd>0){
                                 printf("\n .%d. .%s. \n",tabUzytkownikow[j].nfd,tabUzytkownikow[j].nick);
                                 write(tabUzytkownikow[j].nfd,gotowaWiadomosc,skip);
+                                // write(tabUzytkownikow[j].nfd,buffor,skip);
+                                printf("\nWIADOMOSC:\n");
+                                write(1,gotowaWiadomosc,skip);
+                                printf(".\n");
                                 //printf("CFD GLOWNEGO:%d");
-                                //write(c->cfd,"6\t2\n",4);
-                                //printf("\nWyslalem wiadomosc do:%s.",tabUzytkownikow[j].nick);
                             }
                         }
                     }
                     else{
                         write(c->cfd,"6\t1\n",4);
+                        printf("\nJESTEM W ELSE\n");
                     }
                 }
-                //wysylanie potwierdzenia utworzeniatabUzytkownikow
-                //char potwierdzenie[2]="6\n";
-                //write(c->cfd,potwierdzenie,2);
+
                 
-               // printf("\nZakonczylem case 6");
+               printf("\nZakonczylem case 6");
                 break;
             }
         
@@ -699,7 +707,7 @@ int main()
     
     pthread_t tid;
     
-    uint16_t port = 1237;
+    uint16_t port = 1233;
     //char ip[30] = "192.168.0.15";//INADDR_ANY;
     //strcpy(ip,INADDR_ANY);
     addr.sin_family = PF_INET;
