@@ -127,11 +127,12 @@ public class Watek extends Thread {
                         break;
 
                     case 6:
-                        if (wiadomosc.equals("6\t1")) {
+                         x = wybor[1];
+                        if (x.equals("1")) {
                             System.out.println("Ja wyslalem");
                             Platform.runLater(() -> {
-                                this.oknoWiadomosci.appendText("Ja: " + this.trescWiadomosci);
-                                //  this.informacje.setText("Udało się wsyłać");
+                                this.oknoWiadomosci.appendText("Ja: " + this.trescWiadomosci.getText()+"\n");
+                                this.informacje.setText("Udało się wysłać");
                             });
 
                         } else {
@@ -142,7 +143,7 @@ public class Watek extends Thread {
                             String tresc = wybor[3];
                             String odebranaWiadomosc = nick + " : " + tresc;
                             Platform.runLater(() -> {
-                                this.oknoWiadomosci.appendText(odebranaWiadomosc);
+                                this.oknoWiadomosci.appendText(odebranaWiadomosc+"\n");
                             });
                         }
                         break;

@@ -246,10 +246,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     void handleWyslijWiadomosc(ActionEvent event) {
         try {
-            String wiadomosc = "";
+            String wiadomosc = "6";
      
             String x = this.nickText.getText();
-            wiadomosc=wiadomosc+dodajRozmiar(wiadomosc);
+            wiadomosc=wiadomosc+dodajRozmiar(x);
        
             wiadomosc = wiadomosc + x;
             //this.obecnaGrupa.setText("klub");
@@ -258,7 +258,7 @@ public class FXMLDocumentController implements Initializable {
      
             wiadomosc = wiadomosc + nazwaGrupy;
             x = this.trescWiadomosci.getText();
-            wiadomosc=wiadomosc+dodajRozmiar(wiadomosc);
+            wiadomosc=wiadomosc+dodajRozmiar(x);
       
             wiadomosc = wiadomosc + x;
             wiadomosc=dodajSpacje(wiadomosc);
@@ -350,7 +350,7 @@ public class FXMLDocumentController implements Initializable {
         
         try {
             String wiadomosc = "1";
-            this.polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"), 1237);
+            this.polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"), 1233);
            // wiadomosc = wiadomosc + "1";
             String x=nickText.getText();
             wiadomosc=wiadomosc+dodajRozmiar(x);
