@@ -72,7 +72,7 @@ char* pobierzDane(int rozmiar, char buffor1[],int poczatek){
     }
     dane[n]='\0';
 
-   // printf("\nDane to:%s.\n",dane);
+   printf("\nDane to:%s.\n",dane);
     
     return dane;
 }
@@ -135,7 +135,7 @@ void* cthread (void* arg) {
         while(i<125);
         int wybor=buffor[0]-'0';
        
-        printf("\nWybrales opcje:%d.",wybor);
+        printf("\nWybrales opcje:%d.\n",wybor);
         
         if(wybor<0) {
             exit(0);
@@ -346,7 +346,7 @@ void* cthread (void* arg) {
                 //utworzenie i zapis do pliku
                 plik=fopen(nazwa,"aw+");  
                 fclose(plik);
-                int nowyPlik=open(nazwa,O_WRONLY|O_APPEND);        //dwa razy ten sam plik ??   tu dopisalam create
+                int nowyPlik=open(nazwa,O_WRONLY|O_APPEND);
                 write(nowyPlik,nickAdmina,rozmiarAdmina);
                 write(nowyPlik,"\t",1);
                 write(nowyPlik,lista,rozmiarListy);
@@ -510,7 +510,7 @@ void* cthread (void* arg) {
             }
             
             //------------------------------------------------------------------------------------------------------------------------------------------------
-            //                                                       E D Y C J A    G R U P Y
+            //                                                       U S U W A N I E    G R U P Y
             //------------------------------------------------------------------------------------------------------------------------------------------------
             case 8:{
                 int rozmiarNazwy=zamienNaLiczbe(1,buffor);
@@ -529,20 +529,20 @@ void* cthread (void* arg) {
                 nickUzytkownika = pobierzDane(rozmiarUzytkownika,buffor,skadOdczytywac);
                 printf("\nNick uzytkownika:%s.",nickUzytkownika);
                 
-                if(remove(nazwatxt)==0)
-                    printf("\nUsunieto pomyslnie plik");
-                else
-                    printf("\nNie udalo sie skasowac pliku.");
-                
                 
                 //odczytywanie nazwy pokoju bez .txt
-                int polozenieCzystejNazwy=skadOdczytywac+rozmiarUzytkownika;
-                int rozmiarCzystejNazwy=zamienNaLiczbe(polozenieCzystejNazwy,buffor);
+                int polozenieRozmiaruCzystejNazwy=skadOdczytywac+rozmiarUzytkownika;
+                int rozmiarCzystejNazwy=zamienNaLiczbe(polozenieRozmiaruCzystejNazwy,buffor);
+                printf("\nPolozenie rozmiaru czystej nazwy:%d.",polozenieRozmiaruCzystejNazwy);
+                printf("\nRozmiar czystej nazwy:%d.",rozmiarCzystejNazwy);
                 
-                skadOdczytywac=polozenieCzystejNazwy+3;
+                skadOdczytywac=polozenieRozmiaruCzystejNazwy+3;
+                printf("\nSkad oczytywac czyata nazwe:%d.",skadOdczytywac);
                 char * czystaNazwa = malloc (sizeof (char) * rozmiarCzystejNazwy);
+                
                 czystaNazwa = pobierzDane(rozmiarCzystejNazwy,buffor,skadOdczytywac);
-                printf("\nCzysta nazwa pokoju to:%s.",czystaNazwa);
+                
+                printf("\nCzysta nazwa pokoju to:%s.\n",czystaNazwa);
                 
                 
                 pokoj *tablicaPokoi = malloc(20*sizeof(pokoj));
@@ -551,8 +551,13 @@ void* cthread (void* arg) {
                 int znak;
                 i=0;
                 j=0;
+                
+                plik=fopen("pokoje.txt","aw+");
+                
                 do{
                     znak=getc(plik);
+                    if(znak<0) break;
+                    printf("\nTo jest znak : .%d.\n",znak);
                     if(znak!=9){ //\t =
                         tablicaPokoi[i].nazwa[j]=znak;
                         j++;
@@ -562,24 +567,55 @@ void* cthread (void* arg) {
                         j=0;
                     }
                 }
-                while(znak!=EOF);
+                while(znak!=EOF && znak>=0);
                 
+                
+                
+                for(i=0;i<20;i++){
+                    printf("\nTablica pokoi od %d =%c, d=%d.\n",i,tablicaPokoi[i].nazwa[0], tablicaPokoi[i].nazwa[0]);
+                }
                 int czymoge=0;
-                int n=0;
                 char nowePokoje[320];
                 
                 
-                if(strncmp(tablicaPokoi[0].nazwa,nickUzytkownika,15)!=0){
+                //zczytywanie pierwszego uzytkownika w danym pokoju (admina)
+                plik=fopen(nazwatxt,"aw+");
+                i=0;
+                
+                char adminPokoju[15];
+                
+                do{
+                    znak=getc(plik);
+                    if(znak!=9){
+                        adminPokoju[i]=znak;
+                        i++;
+                    }
+                    else
+                        adminPokoju[i]='\0';
+                }
+                while(znak!=9);
+                
+                
+                fclose(plik);
+                int ileWpisac=0;
+               //sprawdzanie czy mozna usunac plik i przygotowanie nowego
+                if(strncmp(adminPokoju,nickUzytkownika,15)!=0){
+                    printf("\nNie moge usunac pokoju bo nie jestes adminem");
                     char nieJestesAdminem[4]="8\t2\n";
                     write(c->cfd,nieJestesAdminem,4);
+                    ileWpisac=0;
                 }
                 else{
+                    printf("\nJestem adminem\n");
                     czymoge=1;
-                    //TODO usunac nazwe z folderu pom pliku pokoje.txt
                     
+                    //usuwanie nazwe z pliku pokoje.txt
                     int n=0;
-                    for(i=0;i<20;i++)
-                        if(strncmp(tablicaPokoi[i].nazwa,czystaNazwa,15)==0) continue;
+                    for(i=0;i<20;i++){
+                        if(tablicaPokoi[i].nazwa[0]=='\0') break;
+                        if(strncmp(tablicaPokoi[i].nazwa,czystaNazwa,15)==0) {
+                            continue;
+                        }
                         else{
                             for(j=0;j<15;j++){
                                 if(tablicaPokoi[i].nazwa[j]!='\0'){
@@ -587,39 +623,58 @@ void* cthread (void* arg) {
                                     n++;
                                 }
                                 else{
+                                    printf("\nJESTEM W ELSE\n");
                                     nowePokoje[n]='\t';
                                     n++;
+                                    break;
                                 }
                             }
                         }
-                        nowePokoje[n]=9;
+                    }
+                    ileWpisac=n;
+                    //nowePokoje[n]='\0';
+                    //nowePokoje[n+1]='\0';
                     
                 }
                 
-                printf("\nTABLICA POKOI:%s.\n",nowePokoje);
-            if(czymoge==1){
-                if(remove("pokoje.txt")==0){
-                    printf("\nUsunieto pomyslnie plik");
-                    printf("TU BYLESM");
-                }
-                else
-                    printf("\nNie udalo sie skasowac pliku.");
+                printf("\nTABLICA NOWYCH POKOI:%s.\n",nowePokoje);
+                
+                
+                if(czymoge==1){
                     
-                   
-                plik=fopen("pokoje.txt","aw+");  
-                fclose(plik);
-                int nowyPlik=open("pokoje.txt",O_WRONLY|O_APPEND); 
-                write(nowyPlik,nowePokoje,n);
-                write(nowyPlik,"\t",1);
-                close(nowyPlik);
+                    if(remove(nazwatxt)==0)
+                        printf("\nUsunieto pomyslnie plik nazwa.txt");
+                    else
+                        printf("\nNie udalo sie skasowac pliku.");
+                        
+                        
+                    if(remove("pokoje.txt")==0){
+                        printf("\nUsunieto pomyslnie plik pokoje");
+                    }
+                    else
+                        printf("\nNie udalo sie skasowac pliku.");
+                        
+                 
+                     //utworzenie i zapis do pliku
+                    plik=fopen("pokoje.txt","aw+");  
+                    fclose(plik);
+                    int nowyPlik=open("pokoje.txt",O_WRONLY|O_APPEND);
+                    write(nowyPlik,nowePokoje,ileWpisac);
+                  //  write(nowyPlik,"\t",1);
+                    close(nowyPlik);
+                    
+                    char udaloSieUsunacGrupe[4]="8\t1\n";
+                    write(c->cfd,udaloSieUsunacGrupe,4);
             }
+            printf("\nKoniec case 8\n");
+            break;
                 
             }
             
             
             
             default : {
-                printf("\n\nNie znaleziono polcenia\n");
+                printf("\n\nNIE ZNALEZIONO POLECENIA\n");
                 goto EndWhile;
                 break;
             }
