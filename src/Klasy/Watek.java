@@ -127,24 +127,26 @@ public class Watek extends Thread {
                         break;
 
                     case 6:
-                         x = wybor[1];
+                        x = wybor[1];
+                        String x2 = wybor[2];
                         if (x.equals("1")) {
                             System.out.println("Ja wyslalem");
                             Platform.runLater(() -> {
-                                this.oknoWiadomosci.appendText("Ja: " + this.trescWiadomosci.getText()+"\n");
+                                this.oknoWiadomosci.appendText("Ja: " + this.trescWiadomosci.getText() + "\n");
                                 this.informacje.setText("Udało się wysłać");
                             });
 
                         } else {
                             System.out.println("Ja odbieram");
-                            //if((this.obecnaGrupa.getText()+".txt").equals(wybor[2])){
-                            System.out.println("To jest wybor" + wybor.toString());
-                            String nick = wybor[1];
-                            String tresc = wybor[3];
-                            String odebranaWiadomosc = nick + " : " + tresc;
-                            Platform.runLater(() -> {
-                                this.oknoWiadomosci.appendText(odebranaWiadomosc+"\n");
-                            });
+                            if ((this.obecnaGrupa.getText() + ".txt").equals(x2)) {
+                                System.out.println("To jest wybor" + wybor.toString());
+                                String nick = wybor[1];
+                                String tresc = wybor[3];
+                                String odebranaWiadomosc = nick + " : " + tresc;
+                                Platform.runLater(() -> {
+                                    this.oknoWiadomosci.appendText(odebranaWiadomosc + "\n");
+                                });
+                            }
                         }
                         break;
                     case 8:

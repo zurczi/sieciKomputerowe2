@@ -42,7 +42,8 @@ import javafx.stage.WindowEvent;
  * @author Anka
  */
 public class FXMLDocumentController implements Initializable {
-
+    @FXML
+    private TextField adresIP;
     private Polaczenie polaczenie;
     private Grupa grupa;
     private Uzytkownik uzytkownik;
@@ -57,8 +58,7 @@ public class FXMLDocumentController implements Initializable {
     private ListView listaUzytkownikow;
     @FXML
     private ListView listaPokoi;
-    @FXML
-    private Label label;
+
     @FXML
     private Label obecnaGrupa;
     @FXML
@@ -350,7 +350,7 @@ public class FXMLDocumentController implements Initializable {
         
         try {
             String wiadomosc = "1";
-            this.polaczenie = new Polaczenie(InetAddress.getByName("192.168.0.15"), 1233);
+            this.polaczenie = new Polaczenie(InetAddress.getByName(adresIP.getText()), 1233);
            // wiadomosc = wiadomosc + "1";
             String x=nickText.getText();
             wiadomosc=wiadomosc+dodajRozmiar(x);
@@ -383,6 +383,7 @@ public class FXMLDocumentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        this.informacje.setText("Dzień dobry");
         this.polaczenie = null;
         this.nazwaPokoju.setVisible(false);
         this.dodajDoPokoju.setVisible(false);
