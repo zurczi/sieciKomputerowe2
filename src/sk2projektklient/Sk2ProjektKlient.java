@@ -21,7 +21,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import Klasy.*;
 /**
- *
+ * KLASA ZAWIERAJACA MAIN 
  * @author Anka
  */
 public class Sk2ProjektKlient extends Application {

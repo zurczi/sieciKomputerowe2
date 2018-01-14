@@ -8,7 +8,7 @@ package Klasy;
 import Klasy.Uzytkownik;
 
 /**
- *
+ *KLASA KOŃCOWO NIE UŻYWANA 
  * @author Anka
  */
 public class Wiadomosc {

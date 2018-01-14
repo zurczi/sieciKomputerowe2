@@ -37,17 +37,18 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 /**
- * Główne okno klienta
+ * Główne okno klienta+ wysyłanie wiadomosci do serwera
  *
  * @author Anka
  */
 public class FXMLDocumentController implements Initializable {
-    @FXML
-    private TextField adresIP;
+   
     private Polaczenie polaczenie;
     private Grupa grupa;
     private Uzytkownik uzytkownik;
     private Watek nowyWatek;
+    @FXML
+    private TextField adresIP;
     @FXML
     private AnchorPane mainPane;
     @FXML
@@ -58,7 +59,6 @@ public class FXMLDocumentController implements Initializable {
     private ListView listaUzytkownikow;
     @FXML
     private ListView listaPokoi;
-
     @FXML
     private Label obecnaGrupa;
     @FXML

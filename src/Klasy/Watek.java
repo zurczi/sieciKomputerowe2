@@ -19,11 +19,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
 /**
- *
+ *Klasa odpowiedzialna za odbieranie danych od serwera. W tle działa wątek tworzony w 
+ * klasie FXMLDocumentControler.
  * @author Anka
  */
 public class Watek extends Thread {
-
+//pola klasy
     private Polaczenie polaczenie;
     private Thread watek;
     @FXML
@@ -48,7 +49,7 @@ public class Watek extends Thread {
     private TextArea oknoWiadomosci;
     @FXML
     private TextArea trescWiadomosci;
-
+//konstruktor klasy
     public Watek(Polaczenie polaczenie, Label informacje, ListView listaUzyt, ListView listaPokoi, TextField nazwaPokoju, Button dodajDoPokoju, Button zatwierdz, Label pokoje, Label uzytkownicy, Label obecnaGrupa, TextArea oknoWiadomosci, TextArea trescWiadomosci) {
         this.polaczenie = polaczenie;
         this.informacje = informacje;
@@ -63,7 +64,7 @@ public class Watek extends Thread {
         this.oknoWiadomosci = oknoWiadomosci;
         this.trescWiadomosci = trescWiadomosci;
     }
-
+//metoda zawierająca kod wykonywany przez wątek
     @Override
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
@@ -81,6 +82,7 @@ public class Watek extends Thread {
                 System.out.println("To jest wybor switch: " + y);
                 switch (y) {
                     case 2:
+                        //odbieranie listy użytkowników od klienta
                         ArrayList<String> uzytkownicy = new ArrayList<>(Arrays.asList(wybor));
                         uzytkownicy.remove(0);
                         Platform.runLater(() -> {
@@ -88,6 +90,7 @@ public class Watek extends Thread {
                         });
                         break;
                     case 3:
+                        //odbieranie listy pokoi od klienta
                         ArrayList<String> pokoje = new ArrayList<>(Arrays.asList(wybor));
                         pokoje.remove(0);
                         Platform.runLater(() -> {
@@ -95,6 +98,7 @@ public class Watek extends Thread {
                         });
                         break;
                     case 4:
+                        //odbieranie listy użytkowników w danym pokoju
                         ArrayList<String> ludziePokoj = new ArrayList<>(Arrays.asList(wybor));
                         ludziePokoj.remove(0);
                         Platform.runLater(() -> {
@@ -102,12 +106,12 @@ public class Watek extends Thread {
                         });
                         break;
                     case 5:
-                        System.out.println("dobry");
+                      //odbieranie informacji czy udalo sie/nie udalo sie utwory=zyc nowego pokoju
                         x = wybor[1];
                         if (x.equals("1")) {
-                            System.out.println("spoko");
+                          
                             Platform.runLater(() -> {
-                                this.informacje.setText("Utworzono nowa grupe");
+                                this.informacje.setText("Utworzono nowy pokoj");
                                 this.nazwaPokoju.setVisible(false);
                                 this.dodajDoPokoju.setVisible(false);
                                 this.zatwierdz.setVisible(false);
@@ -120,24 +124,25 @@ public class Watek extends Thread {
                         x = wybor[1];
                         if (!x.equals("1")) {
                             Platform.runLater(() -> {
-                                this.informacje.setText("Nie udało się utworzyc nowej grupy");
+                                this.informacje.setText("Nie udało się utworzyc nowego pokoju");
                             });
                         }
 
                         break;
 
                     case 6:
+                        //odbieranie wiadomosci/ tresc rozmowy w pokoju
                         x = wybor[1];
                         String x2 = wybor[2];
                         if (x.equals("1")) {
-                            System.out.println("Ja wyslalem");
+                            //System.out.println("Ja wyslalem");
                             Platform.runLater(() -> {
                                 this.oknoWiadomosci.appendText("Ja: " + this.trescWiadomosci.getText() + "\n");
                                 this.informacje.setText("Udało się wysłać");
                             });
 
                         } else {
-                            System.out.println("Ja odbieram");
+                            //System.out.println("Ja odbieram");
                             if ((this.obecnaGrupa.getText() + ".txt").equals(x2)) {
                                 System.out.println("To jest wybor" + wybor.toString());
                                 String nick = wybor[1];
@@ -150,6 +155,7 @@ public class Watek extends Thread {
                         }
                         break;
                     case 8:
+                        //odbieranie informacji czy udalo sie/nie udalo sie usunac pokoj
                         x = wybor[1];
                         if (x.equals("1")) {
                             Platform.runLater(() -> {

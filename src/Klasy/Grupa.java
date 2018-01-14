@@ -8,7 +8,7 @@ package Klasy;
 import java.util.List;
 
 /**
- *
+ *KLASA KOŃCOWO NIE UŻYWANA
  * @author Anka
  */
 public class Grupa {

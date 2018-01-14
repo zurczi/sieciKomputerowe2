@@ -8,17 +8,9 @@ package Klasy;
 import java.util.ArrayList;
 
 /**
- *
+ *KLASA KOŃCOWO NIE UŻYWANA
  * @author Anka
  */
 public class Funkcje {
-public String[] funkcja(String wejscie){
-    System.out.println("dupka1");
-    String[] wyjscie;
-    wejscie.replace(" ", "");
-    System.out.println("dupka");
-    System.out.println(wejscie);
-    wyjscie=wejscie.split("\t");
-    return wyjscie;
-}
+
 }

@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
 
 /**
  * FXML Controller class
- *
+ *KLASA KONCOOW NIE UZYWANA
  * @author Anka
  */
 public class LogowanieController implements Initializable {

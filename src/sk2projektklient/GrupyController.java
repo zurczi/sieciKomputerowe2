@@ -28,7 +28,7 @@ import javafx.scene.control.TextField;
 
 /**
  * FXML Controller class
- *
+ * KLASA KONCOWO NIE UZYWANA
  * @author Anka
  */
 public class GrupyController implements Initializable {
